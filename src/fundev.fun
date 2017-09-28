@@ -1,0 +1,754 @@
+/**  fundev.fun
+ *
+ *   Official Bento web site.
+ *
+ *
+ **/
+
+site fundev {
+
+    /-------- global values -----------------------/
+
+    global User_Table(utbl{}){} = utbl
+    global Admin_User_Table(atbl{}){} = atbl
+
+    /-------- initialization ----------------------/
+
+    init {
+        load_users("users", "admins");
+    }
+    
+    session_init {
+    }
+
+    load_users(ufilename, afilename) {
+        file user_file = file(ufilename)
+        file admin_file = file(afilename)
+        
+        dynamic table_loader(str){} = table.parse(str)
+        
+        log("looking for user file " + user_file.canonical_path + " and admin file " + admin_file.canonical_path);
+        
+        if (!user_file.exists) {
+            log("user file not found; aborting");
+            redirect error("User file " + ufilename + " not found.")
+
+        } else if (!admin_file.exists) {
+            log("admin file not found; aborting");
+            redirect error("Admin file " + afilename + " not found.")
+
+        } else {
+            eval(User_Table(table_loader(user_file.contents)));
+            eval(Admin_User_Table(table_loader(admin_file.contents)));
+        }
+        
+        if (!User_Table) {
+            redirect error("Invalid user file " + ufilename + ".")
+        }
+        if (!Admin_User_Table) {
+            redirect error("Invalid admin file " + afilename + ".")
+        }
+    }
+    
+    /-------- error handling ----------------------/
+
+    component error(msg) {
+        component_class = "error_msg"
+        message = msg
+        
+        "Error: ";
+        msg;
+    }
+
+
+    /-------- login status and information --------/
+
+    this_username(u) = u
+
+    boolean logged_in(boolean flag) = flag
+
+    dynamic boolean authenticate(username, password) {
+        if (User_Table[username] == password) {
+            eval(this_username(: username :));
+            true;
+        } else {
+            false;
+        }
+    }
+
+    dynamic boolean authenticate_admin(username) {
+        if (Admin_User_Table[username]) {
+            true;
+        } else {
+            false;
+        }
+    }
+
+    /-------- session status ---------------------/
+
+
+    /-------- log file ---------------------------/
+
+    static LOG_FILE = "fundev.log"
+
+    /-------- parameter constants ----------------/
+    
+    static USERNAME_PARAM = "user"
+    static PASSWORD_PARAM = "pass"
+
+    /-------- styles and appearance constants -----/
+
+    static SPLASH_LOGO = "images/fun-logo-280x120.png"
+    static HEADER_LOGO = "images/fun-logo-140x60.png"
+    static int HEADER_LOGO_WIDTH = 140
+    static int HEADER_LOGO_HEIGHT = 60
+    static int HEADER_MIN_WIDTH = 20
+    static int MENU_WIDTH = 13
+    static int CONTENT_MIN_WIDTH = 36
+
+    color main_bgcolor = "#0022AA"
+
+    /-------- common user interface ---------------/
+    
+    dynamic menu_item(base_page p) {
+        base_page pg = p
+        
+        dynamic show(selected_page_name) {
+            if (selected_page_name == pg.type) {
+                [| <span class="menu_item selected_item"> |]
+                pg.label;
+                [| </span> |]
+            } else { 
+                [| <a class="menu_item unselected_item" href="/ |]
+                pg.type;
+                [| "> |]
+                pg.label;
+                [| </a> |]
+            }
+        }    
+    }    
+
+    dynamic menu_item[] main_menu = [ menu_item(index), menu_item(overview), menu_item(docs), menu_item(download), menu_item(examples) ]
+
+
+    media_queries {
+    
+        int narrow_max = HEADER_MIN_WIDTH + MENU_WIDTH   
+      
+      
+        /--- narrow ---/
+          
+        [| @media (max-width: {= narrow_max; =}rem) {
+            
+            .page_wrapper {
+                width: 100%;
+                padding: 0;
+            }
+            
+            .header_bar {
+                width: 100%;
+            }
+            
+            .menu_box {
+                width: 100%;
+            }
+            
+            .content_box {
+                width: 96%;
+                padding: 2%;
+            }
+
+            .content_body ul {
+                padding-left: 1rem;
+            }
+        |]
+        
+    
+        /--- wide ---/    
+    
+        [| } @media (min-width: {= narrow_max; =}rem) {
+            
+            .page_wrapper {
+                width: 100%;
+                padding: 0;
+            }
+
+            .header_bar {
+                width: 100%;
+            }
+            
+            .menu_box {
+                float: left;
+                width: {= MENU_WIDTH; =}rem;
+            }
+            
+            .content_box {
+                margin-left: {= MENU_WIDTH; =}rem;
+            }
+        } |]
+    }
+
+
+
+
+    /-------- base page ---------------------------/
+
+    page(*) base_page(params{}) {
+        boolean ajax_enabled = true
+    
+        boolean needs_login [?]    
+        boolean needs_admin = false
+        
+        boolean show_menu = true
+        
+        label [?]
+        
+        style [| 
+            html, body { 
+                width: 100%;
+                height: 100%;
+                margin: 0 0 0 0;
+                background-color: {= main_bgcolor; =};
+                font-family: "Arial", sans-serif;
+            }
+            
+            code, pre {
+                font-family: "Lucida Console", Monaco, monospace
+            }
+
+            .page_wrapper {
+                background-color: #D5DEE7;
+            }
+            
+            .header_bar {
+                background-color: black;
+                color: white;
+                text-align: center;
+                padding: 0.75rem 0;
+                margin: 0;
+            }
+
+            .header_bar img {
+                display: block;
+                width: {= HEADER_LOGO_WIDTH; =}px;
+                height: {= HEADER_LOGO_HEIGHT; =}px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .menu_box {
+                background-color: #443322;
+                color: #EEEEEE;
+                margin: 0;
+                padding: 0.5rem 0;
+            }
+
+            .menu_box li {
+                display: block;
+                padding: 0.5rem 1rem;
+            }
+            
+            .menu_box ul {
+                padding: 0;
+                margin: 0;
+            }
+           
+            .menu_box a {
+                text-decoration: none;
+            }    
+            
+            .menu_item {
+                font-weight: bold;
+                font-size: 1.2rem;
+                font-family: "Arial", sans-serif;
+            }
+
+            .selected_item {
+                color: #FFFFAA;
+            }
+
+            .unselected_item {
+                color: #D5DEE7;
+            }
+            
+            .menu_box a:hover {
+                color: #FFFFFF;
+            }
+            
+            .content_box {
+                background-color: white;
+            }
+
+            .content_body {
+                color: black;
+                padding: 1rem 1.5rem;
+                font-family: "Lucida Bright", Georgia, serif;
+                font-size: 0.95rem;
+                line-height: 1.5;
+            }
+            
+            .content_body li {
+                padding-bottom: 1rem;
+            }
+
+            .content_body ul {
+                list-style-type: square;
+            }
+            
+            .content_body pre {
+                background-color: #DEE3EE;
+                color: #0000CC; 
+                margin: 0 1rem 1rem 0;
+                padding: 1rem;
+                font-size: 0.9rem;
+            }
+
+            .content_body code {
+                color: #0000CC; 
+                font-size: 0.9rem;
+            }
+
+            .centered_container {
+                width: 100%;
+                height: 100%;
+                margin: 0 0 0 0;
+                position: relative;
+            }
+            
+            .centered_high_box {
+                position: absolute;
+                left: 50%;
+                top: 38%;
+                margin-right: -50%;
+                transform: translate(-50%, -50%);
+                width: 36rem;
+            }
+            
+            .centered_div  {
+                width: 100%;
+                text-align: center;
+             }
+            
+           .labeled_edit {
+                text-align: center;
+                font-weight: bold;
+                padding:0.5rem;
+            }
+
+            #splash_image_holder img {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            
+            #login_splash_box {
+                color: white;
+                font-size: 1rem;
+                font-weight: bold;
+                font-family: "Arial", sans-serif;
+            }
+            
+            #login_button {
+                width: 10rem;
+            }
+            
+            #ok_button {
+                width: 10rem;
+            }
+
+            #cancel_button {
+                width: 10rem;
+            }
+            
+            #tc_container {
+                width: 100%;
+                height: 100%;
+            }
+            
+            #tc {
+                width: 100%;
+                height: 100%;
+            }
+            
+            h2 {
+                margin: 0;
+                font-size: 1.1rem;
+                line-height: 1;
+                padding-top: 1.5rem;
+                color: #1100DD;
+            }
+            
+            {= media_queries; =}
+        |]        
+        
+        component splash_image_holder(img_url) {
+            id = "splash_image_holder"
+            [| <img src="{= img_url; =}"> |]
+        }
+        
+        dynamic component login_splash_box {
+            id = "login_splash_box"
+            component_class = "centered_container"
+            
+            [| <div class="centered_high_box"> |]
+            splash_image_holder(SPLASH_LOGO);
+            login_component(page_name);
+            [| </div> |]
+        }
+        
+        component header_bar {
+            component_class = "header_bar"
+            
+            [| <img src="{= HEADER_LOGO; =}">
+               a fun(ctional) programming language                       
+            |]
+        }
+        
+        dynamic component menu_box(menu_item[] menu_items) {
+            component_class = "menu_box"
+
+            [| <ul> |]
+            for menu_item m in menu_items [|
+                <li>{= m.show(page_name); =}</li>
+            |]
+            [| </ul> |]
+        }
+
+        base_page this_page = owner
+        page_name = owner.type
+
+        log("constructing base_page, page_name is " + page_name);
+        if (needs_login && !logged_in) {
+            log("needs login");
+            login_splash_box;
+
+        } else if (!needs_admin || authenticate_admin(this_username)) {
+            log("we're good");
+            [| <div class="page_wrapper"> |]
+            header_bar;
+            if (show_menu) {
+                menu_box(main_menu);
+            }
+            [| <div class="content_box"><div class="content_body"> |] 
+            sub;
+            [| </div></div></div> |]
+
+        } else {
+            log("access to " + page_name + " by " + this_username + " denied");
+            "fail";
+        }   
+    
+    }
+
+
+    /-------- login mechanics ---------------------/
+
+    public dynamic component login_component(params{}),(page_name) {
+        goto_page = page_name ? page_name : goto_param
+        goto_param {= with (params) {= params["goto"]; =} else [| index |] =}
+        component this_component = owner
+        field_ids[] = [ USERNAME_PARAM, PASSWORD_PARAM ]
+        submit_params{} = { "goto": goto_page } 
+        
+        
+        log(" login component params: " + params);
+        log(" login submit params: " + submit_params);
+        
+        if (params[USERNAME_PARAM]) {
+            log("trying to authenticate " + params[USERNAME_PARAM]);
+            eval(logged_in(: authenticate(params[USERNAME_PARAM], params[PASSWORD_PARAM]) :)); 
+        }
+        if (logged_in) {
+            log("logged in, redirecting to " + goto_page);
+            redirect (goto_page)
+
+        } else {
+            [| <div class="centered_div"><table><tr> |]
+            if (params[USERNAME_PARAM]) [|
+                <td colspan="2" style="background-color: white; color: red; text-align: center;">Login unsuccessful.  Try again.</td>
+            |] else [|
+                <td colospan="2">&nbsp;</td>
+            |]
+            [| </tr><tr><td><table><tr><td>Username:</td><td> |]
+            textedit(USERNAME_PARAM, this_username, 20);
+            [| </td></tr><tr><td>Password:</td><td> |]
+            passwordedit(PASSWORD_PARAM, "", 20);
+            [| </td></tr></table> |]
+            [| </td><td> |]
+            submit_button("login", "Login", "/" + this_component.id, field_ids, submit_params);
+            [| </td></tr></table></div> |]
+        }
+        
+    }    
+
+
+    /-------- home page ---------------------------/
+
+    public base_page(*) index(params{}) {
+        boolean needs_login = false    
+
+        label = "Home"
+        
+        what_is_fun;
+    }  
+
+    what_is_fun {
+        [| <h2>A Practical Language For </h2>
+    
+        
+    why_fun {      
+
+        [| <h2>Why a new language?</h2>
+           <p>There is a theoretical answer to this question, and a practical answer.  Theoretically, a
+           language is functional if it requires the programmer to follow the functional programming 
+           paradigm.  Practically, it's enough if the language enables rather than requires functional
+           programming..</p>
+           
+           <p>In practical terms, a language is functional if it encourages a functional programming style.
+           
+           The strength of a language does not come from what it can do; it comes from what a
+           a programmer using it can do.  The premise, and the promise, of Bento is that in the hands of a
+           good programmer, a simple language with a small but expressive feature set that is well 
+           tuned to the thought processes of programming can be more effective for many uses than 
+           more "advanced" languages with many more features.
+           </p>
+           <h2>Code as poetry</h2>
+           <p>Bento's "trick" is to say a lot with a little, the way a poem can tell a whole story
+           in a few words.  Bento achieves this conciseness by weaving together features that address
+           many of the sources of complexity in conventional programming languages:
+           </p>
+           <ul><li><strong>Declarative.</strong>  Bento is a declarative language.  Declarative languages
+           tend to be more concise than procedural languages because, essentially, they leave out the
+           verbs.  The Bento "Hello, World" program has no need for a printf statement.
+           </li>
+           <li><strong>Code/data mixing.</strong>  Templating languages are popular in web development
+           because web pages typically consist of static content with embedded bits of dynamic content,
+           and templates capture this structure efficiently.  Bento does this and more -- free mixing 
+           of code and data.  
+           </li>
+           <li><strong>Web-oriented.</strong> Every Bento program is automatically a web site or service, 
+           responding to requests either from an external server or from the runtime engine's own embedded
+           Jetty HTTP server.  This eliminates the need for explicit connection and protocol handling code. 
+           </li>
+           <li><strong>Object-oriented.</strong>  Bento's object-oriented features support reuse, which makes
+           code smaller, and abstraction, which makes code simpler to understand.  
+           </li>
+           <li><strong>One kind of entity.</strong> In Bento, types, classes, functions, objects and 
+           variables are not different kinds of entities, they are different roles that a Bento entity can 
+           play, depending on the context.  This reduces both the number of entities needed (because 
+           entities can play multiple roles) and the syntax neeed to  declare the kind of entity (because 
+           there is only one).
+           </li>
+           <li><strong>Poetic programming.</strong> Finally, Bento encourages a style of programming 
+           that focuses on domain modeling and user value rather than infrastructure and platform.  This 
+           focus leads to programs that are simpler and more straightforward to understand than applications
+           dependent on the complex platforms and frameworks that dominate modern software development.
+           </li>
+           </ul>
+        |]
+    }
+
+    cutting_room_floor [|
+    
+
+           Bento's object modeling features are both rich and concise.  The richness comes from
+           Bento's support for multiple inheritance as well as multiple modes of inheritance -- interface
+           (inheriting functions), implementation (inheriting construction logic), override (inheriting 
+           from the type being overridden) and lateral (mixing in construction logic from an interface).
+           The conciseness flows from the object lifecycle paradigm that allows object hierarchies to be
+           defined without the need for syntactic buttressing (see next bullet point).
+           
+           <li><strong>One namespace, multiple layers of meaning.</strong> In Bento, types, classes, 
+           functions, objects and variables are not different kinds of entities living in distinct 
+           namespaces.  Rather, they are different roles that a Bento entity can play, depending on
+           the context.  This reduces both the number of entities needed (because entities can play 
+           multiple roles) and the syntax neeed to declare them (because it isn't necessary to specify
+           the category of entity).
+           </li>
+
+           <p>Templating languages are popular in web development
+           because the template paradigm of code embedded in data efficiently captures the typical 
+           structure of actual web pages: static content with embedded bits of dynamic content.  Bento
+           goes further.  Not only does it support embedding code in data, like a templating language,
+           it also supports embedding data in code, which can be more efficient when the content
+           is mostly dynamic with some embedded static bits.    
+
+           <li><strong>Web-oriented.</strong> Every Bento program is automatically a web site or service. 
+           More precisely, a Bento program defines a system of responses which the Bento runtime engine 
+           uses to respond to HTTP requests, either from an external server or from the runtime engine's 
+           own embedded Jetty HTTP server.  The immediate benefit is freeing the programmer from having
+           to handle connections or protocol details.  
+           </li>
+           <p>Having a built-in web server, as convenient as it is, is a fairly superficial feature.  The 
+           real difference lies at the level of interaction between language and human (user or programmer).
+           The standard paradgim of language-human interaction for languages of all kinds – functional, 
+           procedural, object-oriented – is the command paradigm.  In this paradigm, a program is a command.
+           Programs are invoked and run till completion or interruption.  The distinguishing feature of 
+           languages which follow the command paradigm is a singleton entry point.  The rules for the name, 
+           parameters and other details vary from language to language, but whatever it's called there is
+           a particular point in the code where the program begins.
+           </p><p>
+           To be web-oriented, in contrast, is to be driven by request, not command.  A program in a language 
+           that follows the request paradigm has multiple entry points.  There is no guarantee that any 
+           particular entry point will be executed first, or ever, and the completion of a request does not in 
+           general imply completion of the program.   
+           </p><p>
+           Neither paradigm is inherently superior to the other, and neither precludes any interactive 
+           possibilities.  You can in fact implement any kind of interaction model in either language.    The 
+           significance of the interaction paradigm is that it determines which kind of interaction model 
+           comes naturally or automatically when using a language, and which must be devised and engineered.
+           </p>
+
+    
+           <h2>Simple and familiar, yet radically new</h2>
+           <p>Much of Bento's syntax will be recognizable to programmers familiar with mainstream
+           languages such as C, Java, Python and Javascript.  (An obvious exception is the set of 
+           delimiters Bento uses, which are purposefully unusual so that embedded Bento code can be 
+           safely distinguished from Javascript or other non-Bento code that can appear in Bento data 
+           blocks.)  This allows programmers to leverage their existing knowledge and experience when
+           learning to use Bento.  However, while the syntax may be functionally similar, the 
+           actual meaning is different due to the underlying paradigm.
+           </p><p>
+           Consider the following Bento snippet:</p><pre>[``
+
+    int x = 23
+    
+    log("The value of x is " + x);
+
+           ``]</pre><p>The first line looks very much like an assignment, and indeed has the same ultimate
+           effect; the second line will cause "The value of x is 23" to appear on the console.  But in
+           actuality the first line is a definition, not an assignment: x is a function that returns 23,
+           not a memory location which is assigned the value 23.  This syntactic similarity allows Bento
+           to support lazy evaluation and other benefits of declarative programming without the steep 
+           learning curve typical of functional languages.  
+           </p>
+           
+           Conceptually, a Bento entity follows a lifecycle. It begins as a bare type.
+           If the entity has children, then the type becomes an interface.  If the entity is instantiated,
+           it becomes a function; if that instantiated value is cached (the default in Bento), it becomes
+           a variable; if the entity's children are instantiated and cached it becomes a full-fledged
+           object.
+                      
+           <h2>Why use Bento?</h2>
+           <p>
+           </p>
+    
+    |]
+      
+    /-------- overview page --------------------------/
+
+    current_article(article_key) = article_key
+
+
+    /** The list of available articles.  This is the canonical source of article
+     *  availability; other sources of article information, such as the article
+     *  lookup table, are constructed from this list.
+     **/
+    global article[] all_articles = [ quick_tour_article, leisurely_tour_article, backstory_article ]
+
+    /** Lookup table for articles.  Keyed on article key. **/
+    global article{} article_table = { for article a in all_articles { a.key: a } }
+    
+    global article overview_article(doc_name, article_name) {
+        title = article_name
+        key = doc_name
+        content = include_content(doc_name)
+    }
+
+    global article quick_tour_article = overview_article("quick_tour", "A Brief Tour of Bento");
+    global article leisurely_tour_article = overview_article("leisurely_tour", "A More Leisurely Tour of Bento");
+    global article backstory_article = overview_article("backstory", "Bento Backstory")
+
+   
+    public base_page(*) overview(params{}) {
+        boolean needs_login = false    
+
+        label = "A Tour of Bento"
+
+        article_param = params["article"]
+        
+        static DEFAULT_ARTICLE = "quick_tour"
+
+        if (article_param) {
+            eval(current_article(: article_param :));
+        } else if (!current_article) {
+            eval(current_article(: DEFAULT_ARTICLE :));
+        }
+        log("current article is " + current_article); 
+        
+        show_article(article_table[current_article]); 
+
+    }
+
+    dynamic include_content(doc_name) {
+        include_file(main_site.filepath + "/docs/" + doc_name + ".md");
+    }
+
+
+
+    /-------- docs page ---------------------------/
+
+    public base_page(*) docs(params{}) {
+        boolean needs_login = false    
+
+        label = "Documentation"
+        
+        [| <h1>Bento Documentation</h1> |]
+        
+        
+    }
+    
+    /-------- download page -----------------------/
+
+    public base_page(*) download(params{}) {
+        boolean needs_login = false    
+
+        label = "Download"
+    }
+    
+    /-------- examples page -----------------------/
+
+    public base_page(*) examples(params{}) {
+        boolean needs_login = false    
+
+        label = "Examples"
+    }
+    
+    public base_page show_logs {
+        boolean needs_login = true
+        boolean needs_admin = true
+
+        [| <h3>fundev.log</h3><pre> |]
+        include_file(LOG_FILE);
+        [| </pre> |]
+    }
+
+
+    /---- pseudofiles ----/
+
+    js {
+        lib {
+            three {
+                public js {
+                    include_file("lib/three.js");
+                }
+            }
+            stats {
+                public js {
+                    include_file("../../3p/lib/stats.min.js");
+                }
+            }
+        }
+    }
+
+
+    /-------- error page --------------------------/
+    public page error_page(request r) {
+        boolean needs_login = false    
+        title = [| Error |]
+        color bgcolor = "#EEDDAA"
+
+        error_div(r);        
+    }    
+
+}
