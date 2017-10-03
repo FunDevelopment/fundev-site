@@ -493,59 +493,28 @@ site fundev {
     }  
 
     what_is_fun {
-        [| <h2>A Practical Language For </h2>
-    
-        
-    why_fun {      
-
-        [| <h2>Why a new language?</h2>
-           <p>There is a theoretical answer to this question, and a practical answer.  Theoretically, a
-           language is functional if it requires the programmer to follow the functional programming 
-           paradigm.  Practically, it's enough if the language enables rather than requires functional
-           programming..</p>
+        [| <h2>A Practical Language For Imaginative Programming</h2>
            
-           <p>In practical terms, a language is functional if it encourages a functional programming style.
+           <p>Fun is a new kind of programming language that incorporates functional and 
+           object-oriented principles in an exceedingly simple, flexible and expressive
+           language.  The result is a lightweight yet powerful language that makes 
+           good programming enjoyable.</p>
            
-           The strength of a language does not come from what it can do; it comes from what a
-           a programmer using it can do.  The premise, and the promise, of Bento is that in the hands of a
-           good programmer, a simple language with a small but expressive feature set that is well 
-           tuned to the thought processes of programming can be more effective for many uses than 
-           more "advanced" languages with many more features.
-           </p>
-           <h2>Code as poetry</h2>
-           <p>Bento's "trick" is to say a lot with a little, the way a poem can tell a whole story
-           in a few words.  Bento achieves this conciseness by weaving together features that address
-           many of the sources of complexity in conventional programming languages:
-           </p>
-           <ul><li><strong>Declarative.</strong>  Bento is a declarative language.  Declarative languages
-           tend to be more concise than procedural languages because, essentially, they leave out the
-           verbs.  The Bento "Hello, World" program has no need for a printf statement.
-           </li>
-           <li><strong>Code/data mixing.</strong>  Templating languages are popular in web development
-           because web pages typically consist of static content with embedded bits of dynamic content,
-           and templates capture this structure efficiently.  Bento does this and more -- free mixing 
-           of code and data.  
-           </li>
-           <li><strong>Web-oriented.</strong> Every Bento program is automatically a web site or service, 
-           responding to requests either from an external server or from the runtime engine's own embedded
-           Jetty HTTP server.  This eliminates the need for explicit connection and protocol handling code. 
-           </li>
-           <li><strong>Object-oriented.</strong>  Bento's object-oriented features support reuse, which makes
-           code smaller, and abstraction, which makes code simpler to understand.  
-           </li>
-           <li><strong>One kind of entity.</strong> In Bento, types, classes, functions, objects and 
-           variables are not different kinds of entities, they are different roles that a Bento entity can 
-           play, depending on the context.  This reduces both the number of entities needed (because 
-           entities can play multiple roles) and the syntax neeed to  declare the kind of entity (because 
-           there is only one).
-           </li>
-           <li><strong>Poetic programming.</strong> Finally, Bento encourages a style of programming 
-           that focuses on domain modeling and user value rather than infrastructure and platform.  This 
-           focus leads to programs that are simpler and more straightforward to understand than applications
-           dependent on the complex platforms and frameworks that dominate modern software development.
-           </li>
-           </ul>
-        |]
+           <p>One key to Fun's simplicity is its unitary entity space.  In Fun, everything 
+           is a function and functions are everything, including classes, types, interfaces,
+           methods, fields and instances.  Having one kind of entity play many roles
+           means that statements in Fun typically have multiple layers of meaning.  This 
+           makes it possible to do more with less, the way poetry is able to convey deep
+           thoughts with a few simple words.</p>
+           
+           <p>A number of other features help make Fun especially expressive and natural.</p>
+           <ul>
+           <li>As a functional language, Fun has no assignment operator and therefore no
+           variables.  But it has something better: built-in caching and automated state 
+           management.  Just as automated garbage collection freed programmers from 
+           equivalent of   
+           
+      |]
     }
 
     cutting_room_floor [|
