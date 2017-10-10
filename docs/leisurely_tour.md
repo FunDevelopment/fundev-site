@@ -11,7 +11,7 @@ How else to begin our tour?  Say hello, Fun:
   }
 
 The above code defines a web site called <code>hello</code>.  (A Fun program is
-automatically a web site.)  The <code>[=</code> and <code>=]</code> delimit a code 
+automatically a web site.)  The <code>{</code> and <code>}</code> delimit a code 
 block, which is a block containing Fun statements.  This particular block contains 
 a single statement, a definition of a page called <code>index</code>, the default 
 home page for the site.  
@@ -30,34 +30,17 @@ there is no way to change the value it returns.
 
 Here is an alternate way of expressing the same definition: 
 
-  site hello [=
+  site hello {
       page index [|
           <h1>Hello, World.</h1>
       |]
-  =]
+  }
 
 In this case we represent the content of the page with a data block rather than
 a string.  A data block is delimited by <code>[|</code> and <code>|]</code>,  
 and may contain any kind of text.  Leading and trailing whitespace is automatically
 trimmed, so this version produces exactly the same text as the previous one.
 
-###What's with the funny delimiters?
-
-One of Fun's most oftenly convenient features is the ability to mix code and data 
-freely.  It's the simplest and most natural way to represent the structure of a typical 
-HTML page -- there's a lot of boilerplate (data), and inside of the boilerplate is 
-embedded lots of changeable parts (code), each of which itself contains static parts 
-like labels (data) and parts that are generated at runtime (code).
-
-In most web applications this is accomplished by templates, which allow code to be
-embedded in data (HTML).  Fun's model of code-data is more flexible, allowing data
-to be embedded in code as easily as code in data.  Fun accomplishes this by using 
-special delimiters for data as well as code, and using delimiters for both code and 
-data that don't appear commonly in data and aren't used in other languages (since data 
-is often itself just code in a different language such as HTML, CSS or Javascript). 
-
-(Fun's ability to accomplish templating tasks with gusto is <a href="overview?article=backstory">
-not a coincidence</a>.)
 
 ###A more personal hello
 
@@ -72,26 +55,26 @@ Fun curly braces (<code>{}</code>) signify a table.
 What we want our application to do is look for a "name" argument, and if it's there say
 hello to the specified name, otherwise say hello to World.  Here is our improved site: 
 
-  site hello [= 
-      page index(params{}) [=
-          user_name = params{"name"}
-
-          hello_to = user_name ? user_name : "World"
-
-          hello(target) [|
-              <h1>Hello, [= target; =].</h1>
-          |]
-      
-          hello(hello_to);
-      =]
-  =]
+      site hello {
+          page index(params{}) {
+              user_name = params["name"]
+    
+              hello_to = user_name ? user_name : "World"
+    
+              hello(target) [|
+                  <h1>Hello, {= target; =}.</h1>
+              |]
+          
+              hello(hello_to);
+          }
+      }
 
 The definition of <code>index</code> contains three other definitions, <code>user_name</code>,
 <code>hello_to</code> and <code>hello</code>, and one construction (<code>hello(hello_to);</code>.
 That may seem like a lot for page that just says hello, and indeed it is; we could replace the
 above definition of index with the following and achieve the same output:
 
-      page index(params{}) = "<h1>Hello, " + (params{"name"} ? params{"name"} : "World") + ".</h1>"
+      page index(params{}) = "<h1>Hello, " + (params["name"] ? params["name"] : "World") + ".</h1>"
 
 However, we want our application to be comprehensible, maintainable and adaptable, so we break
 up the logic into three distinct functions:

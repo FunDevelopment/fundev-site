@@ -128,7 +128,7 @@ site fundev {
         }    
     }    
 
-    dynamic menu_item[] main_menu = [ menu_item(index), menu_item(overview), menu_item(docs), menu_item(download), menu_item(examples) ]
+    dynamic menu_item[] main_menu = [ menu_item(index), menu_item(overview), menu_item(docs), menu_item(download) ] // , menu_item(examples) ]
 
 
     media_queries {
@@ -139,56 +139,47 @@ site fundev {
         /--- narrow ---/
           
         [| @media (max-width: {= narrow_max; =}rem) {
-            
-            .page_wrapper {
-                width: 100%;
-                padding: 0;
-            }
-            
-            .header_bar {
-                width: 100%;
-            }
-            
-            .menu_box {
-                width: 100%;
-            }
-            
-            .content_box {
-                width: 96%;
-                padding: 2%;
-            }
-
-            .content_body ul {
-                padding-left: 1rem;
-            }
+               .page_wrapper {
+                   width: 100%;
+                   padding: 0;
+               }
+               .header_bar {
+                   width: 100%;
+               }
+               .menu_box {
+                   width: 100%;
+               }
+               .content_box {
+                   width: 96%;
+                   padding: 2%;
+               }
+               .content_body ul {
+                   padding-left: 1rem;
+               }
+           }
         |]
         
     
         /--- wide ---/    
     
-        [| } @media (min-width: {= narrow_max; =}rem) {
-            
-            .page_wrapper {
-                width: 100%;
-                padding: 0;
-            }
-
-            .header_bar {
-                width: 100%;
-            }
-            
-            .menu_box {
-                float: left;
-                width: {= MENU_WIDTH; =}rem;
-            }
-            
-            .content_box {
-                margin-left: {= MENU_WIDTH; =}rem;
-            }
-        } |]
+        [| @media (min-width: {= narrow_max; =}rem) {
+               .page_wrapper {
+                   width: 100%;
+                   padding: 0;
+               }
+               .header_bar {
+                   width: 100%;
+               }
+               .menu_box {
+                   float: left;
+                   width: {= MENU_WIDTH; =}rem;
+               }
+               .content_box {
+                   margin-left: {= MENU_WIDTH; =}rem;
+               }
+           }
+        |]
     }
-
-
 
 
     /-------- base page ---------------------------/
@@ -493,26 +484,37 @@ site fundev {
     }  
 
     what_is_fun {
-        [| <h2>A Practical Language For Imaginative Programming</h2>
+        [| <h2>Welcome to Fun</h2>
            
-           <p>Fun is a new kind of programming language that incorporates functional and 
-           object-oriented principles in an exceedingly simple, flexible and expressive
-           language.  The result is a lightweight yet powerful language that makes 
-           good programming enjoyable.</p>
+           <p>Fun is a new kind of programming language.  It's extraordinarily simple, and
+           extraordinarily powerful.  This is not magic; it comes from taking a fundamentally
+           different approach to language design.</p>
            
-           <p>One key to Fun's simplicity is its unitary entity space.  In Fun, everything 
-           is a function and functions are everything, including classes, types, interfaces,
-           methods, fields and instances.  Having one kind of entity play many roles
-           means that statements in Fun typically have multiple layers of meaning.  This 
-           makes it possible to do more with less, the way poetry is able to convey deep
-           thoughts with a few simple words.</p>
+           <p>Fun is simple because it has only one kind of entity, and therefore has no need for 
+           distinct mechanisms for creating and using classes, types, functions, variables, objects,
+           interfaces etc.  But Fun doesn't give up the functionality they bring; in Fun these 
+           things are roles that any entity can play under the right circumstances.</p>
            
-           <p>A number of other features help make Fun especially expressive and natural.</p>
+           <p>Fun's power comes from many sources:</p>
            <ul>
-           <li>As a functional language, Fun has no assignment operator and therefore no
-           variables.  But it has something better: built-in caching and automated state 
-           management.  Just as automated garbage collection freed programmers from 
-           equivalent of   
+           <li><b>Object-oriented</b>: Fun has a rich set of OO features, including some unique to
+           Fun.  For example, Fun has a <code>sub</code> keyword that works like the <code>super</code> 
+           keyword in Java, C++ and other languages, only in reverse: it allows a superclass 
+           to invoke its subclass.  Instead of the subclass invoking the superclass   This turns 
+           out to be very useful when defining a class hierarchy for things like web pages or message
+           packets, where the stuff on the outside is created by the superclass and the stuff
+           on the inside by the subclass.</li> 
+           <li><b>Web-oriented</b>: Fun has a built-in web server, and a program doesn't have to do
+           anything special to be a web site.</li>
+           <li><b>Automated state management</b>: Fun is at heart a functional language and has no 
+           assignment operator.  But unlike other functional languages, it's not hard to manage state 
+           in Fun; in fact it happens automatically via caching, which is built in to the language 
+           and can provide whatever stateful behavior a program might need.</li>
+           <li><b>Flexible Typing</b>: Fun supports a hybrid static/dynamic type model.  Static
+           typing is supported but not required.</li>
+           <li><b>Code-Data Mixing</b>: like a templating language, Fun allows code to be embedded
+           in data; Fun also allows data to be embedded in code, with no limit to the nesting.</li>
+           </ul> 
            
       |]
     }
@@ -624,15 +626,15 @@ site fundev {
         content = include_content(doc_name)
     }
 
-    global article quick_tour_article = overview_article("quick_tour", "A Brief Tour of Bento");
-    global article leisurely_tour_article = overview_article("leisurely_tour", "A More Leisurely Tour of Bento");
-    global article backstory_article = overview_article("backstory", "Bento Backstory")
+    global article quick_tour_article = overview_article("quick_tour", "A Brief Tour of Fun");
+    global article leisurely_tour_article = overview_article("leisurely_tour", "A More Leisurely Tour of Fun");
+    global article backstory_article = overview_article("backstory", "Fun Backstory")
 
    
     public base_page(*) overview(params{}) {
         boolean needs_login = false    
 
-        label = "A Tour of Bento"
+        label = "A Tour of Fun"
 
         article_param = params["article"]
         
@@ -662,7 +664,7 @@ site fundev {
 
         label = "Documentation"
         
-        [| <h1>Bento Documentation</h1> |]
+        [| <h1>Fun Documentation</h1> |]
         
         
     }
