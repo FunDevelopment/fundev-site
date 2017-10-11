@@ -46,7 +46,30 @@ An example of each of the above, with comments:
 A definition associates a name and optionally a type with a set of Fun statements, which
 can be any combination of child definitions and constructions. The following is a 
 definition of <code>hello</code>, of type <code>page</code>, which contains 
-one definition and one construction:
+one construction:
+
+    page hello {
+        "Hello, World";
+    }
+ 
+Fun is declarative, not imperative, and what a definition defines is output, not commands.  So
+instead of a command to output "Hello, World", something like <code>print "Hello, World"</code>,
+all you need is "Hello, World".
+
+This definition is the equivalent of the previous one, but has a child definition as well as
+a construction:
+
+    page hello {
+        hello_world {
+            "Hello, World."
+        }
+    
+        hello_world;
+    }
+
+
+
+
 
     page hello {
         hello_world [|
