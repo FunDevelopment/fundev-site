@@ -3,7 +3,7 @@ little background or explanation.  For a more in-depth account, see
 <a href="overview?article=leisurely_tour">A More Leisurely Tour of Fun</a>.   
 
 
-###Fun Statements
+###Statements
 
 Fun is a declarative language.  A Fun program is a specification 
 of output.  A Fun program can be either a script or a web site; in the
@@ -60,12 +60,69 @@ This definition is the equivalent of the previous one, but has a child definitio
 a construction:
 
     page hello {
-        hello_world {
-            "Hello, World."
-        }
+        say_hello = "Hello, World."
     
-        hello_world;
+        say_hello;
     }
+
+The child definition here looks like an assignment, but is actually just a shorthand form of
+definition available when the definition contains exactly one construction and zero child
+definitions.  The following two definitions are exactly equivalent:
+
+        say_hello = "Hello, World."
+    
+        say_hello {
+            "Hello, World.";
+        }
+
+There is yet a third definition form which uses a data block instead of a code block or a
+single construction.  The following definition is exactly equivalent to the two preceding
+definitions (in a standard data block leading and trailing whitespace is trimmed):
+
+        say_hello [|
+            Hello, World.
+        |]
+
+Note that if you actually try to compile the above three definitions together at once the
+compile will fail.  You can define a name only once in any particular scope.  But you can
+define the name as often as you like as long as each is in a different scope.  The following
+will compile:
+
+    definition_options {
+    
+        element_definition {
+            say_hello = "Hello, World."
+        }
+        
+        code_block_definition {
+            say_hello {
+                "Hello, World.";
+            }
+        }
+        
+        data_block_definition {
+            say_hello [|
+                Hello, World.
+            |]
+        }
+    }
+
+
+###Programs
+
+A Fun program is typically a web site, such as the following:
+
+    site hello_world {
+    
+        page index = hello
+        
+        page hello {
+            say_hello = "Hello, World."
+     
+            say_hello;
+        }
+    }
+
 
 
 
