@@ -107,14 +107,51 @@ will compile:
         }
     }
 
+###Types
+
+In Fun, every definition defines a type by that name.  This type can then be used as
+the basis for typed definitions.  
+
+A typed definition behaves differently from an untyped definition in several ways,
+including:
+
+* A typed definition has access to all child definitions of its type (interface inheritance).
+* A typed definition has access to its type's constructions (implementation inheritance).
+* An instance of a typed definition can match a parameter of that type when passed as an
+argument to an overloaded definition.
+* An instance of a typed definition can be detected as an instance of that type in a <code>isa</code>
+expression. 
+
+A definition is typed if the definition name is preceded by a type name.  The type name can
+be the name of another definition or a primitive type (<code>int</code>, <code>boolean</code>,
+<code>string</code>, etc.).  The following definitions are all typed:
+
+    int x = 5
+    
+    page hello_page {
+        "Hello.";
+    }
+    
+    javascript hello_alert [|
+        window.alert("Hello.");
+    |]
+
+    boolean this_is_true = (hello_alert isa javascript)
+
+The types declared by the above definitions include two primitive types (<code>int</code> and
+<code>boolean</code> and two defined types (<code>page</code> and <code>javascript</code>).  The
+latter two types are defined in the standard fun library.
+
+
 
 ###Programs
 
-A Fun program is typically a web site, such as the following:
+A Fun program is typically a web site, which is a definition of type <code>site</code> such as
+the following:
 
     site hello_world {
     
-        page index = hello
+        public page index = hello
         
         page hello {
             say_hello = "Hello, World."
@@ -123,8 +160,20 @@ A Fun program is typically a web site, such as the following:
         }
     }
 
+Note the use of the <code>public</code> keyword; this indicates that the associated definition
+is externally accessible.  The only externally accessible definition in the above site is
+<code>index</code>.
 
+Definitions of type <code>site</code> have certain special properties:
 
+* They can be served as web sites.
+* They can contain site-level directives (<code>adopt</code> and <code>extern</code>)
+* They cannot directly contain constructions (but they can contain definitions that contain constructions)
+* They can be split across multiple files
+
+    script hello_world {
+        public main = "Hello, World."
+    }
 
 
 
