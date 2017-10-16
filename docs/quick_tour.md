@@ -161,15 +161,17 @@ the following:
     }
 
 Note the use of the <code>public</code> keyword; this indicates that the associated definition
-is externally accessible.  The only externally accessible definition in the above site is
-<code>index</code>.
+is externally accessible.
 
-Definitions of type <code>site</code> have certain special properties:
+Definitions of type <code>site</code> have several special properties:
 
 * They can be served as web sites.
-* They can contain site-level directives (<code>adopt</code> and <code>extern</code>)
-* They cannot directly contain constructions (but they can contain definitions that contain constructions)
-* They can be split across multiple files
+* They can contain site-level directives (<code>adopt</code> and <code>extern</code>) that enable access
+to Fun and non-Fun code outside of the site.
+* They cannot directly contain constructions (though they can contain definitions that contain constructions).
+* They can be split across multiple files.
+
+
 
     script hello_world {
         public main = "Hello, World."
@@ -177,24 +179,8 @@ Definitions of type <code>site</code> have certain special properties:
 
 
 
-    page hello {
-        hello_world [|
-            <h1>Hello, World.</h1>
-        |]
-    
-        hello_world;
-    }
 
-Definitions take various forms.  In a <b>block definition</b> the body of the
-definition is a block. Both definitions in the above example are block definitions.
-The body of <code>hello</code> is a code block, delimited by <code>{</code> and 
-<code>}</code>.  The body of the contained definition, <code>hello_world</code>, 
-is a data block, delimited by <code>[|</code> and <code>|]</code>.  If a definition
-contains exactly one construction and zero definitions another form is available,
-an <b>element definition</b>.  Here is the definition of <code>hello_world</code>
-rewritten in element form:
 
-    hello_world = "<h1>Hello, World.</h1>"
     
 There is also a shorthand form for an empty definition, i.e. a definition containing
 zero definitions and zero constructions:
