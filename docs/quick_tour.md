@@ -5,13 +5,14 @@ little background or explanation.  For a more in-depth account, see
 
 ###Statements
 
-Fun is a declarative language.  A Fun program is a specification 
-of output.  A Fun program can be either a script or a web site; in the
-latter case, Fun runs as a web server and the Fun program specifies web pages.
+Fun is a declarative language.  A Fun program specifies output.  Typically
+a Fun program is run as a web site, in which case the output consists of
+web pages.
 
-Fun programs consist of <b>definitions</b> and <b>constructions</b>.
-A construction is a statement that potentially yields output.  There are several
-kinds of constructions:
+A Fun program is comprised of <b>definitions</b> and <b>constructions</b>.  A
+definition associates a name with a (possibly empty) set of constructions and
+child definitions.  A construction is a statement that potentially yields 
+output.  There are several kinds of constructions:
 
 * Blocks (code or data)
 * Control statements (loops, conditionals and redirections)
