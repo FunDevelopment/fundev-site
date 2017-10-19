@@ -486,16 +486,24 @@ site fundev {
     what_is_fun {
         [| <h2>Welcome to Fun</h2>
            
-           <p>Fun is a new kind of programming language.  It's extraordinarily simple, and
-           extraordinarily powerful.  This is not magic; it comes from taking a fundamentally
-           different approach to language design.</p>
+           <p>Fun is a new kind of programming language.  It's very simple and very
+           powerful.  This is not magic; it comes from taking a different approach to 
+           language design.</p>
            
-           <p>Fun is simple because it has only one kind of entity, and therefore has no need for 
+           <p>Fun is simple because it has only one kind of entity, so has no need for 
            distinct mechanisms for creating and using classes, types, functions, variables, objects,
            interfaces etc.  But Fun doesn't give up the functionality they bring; in Fun these 
-           things are roles that any entity can play under the right circumstances.</p>
+           things are roles, not entities.</p>
            
-           <p>Fun's power comes from many sources:</p>
+           <p>Fun is powerful because of the way it synthesizes concepts from three of the most
+           productive approaches to programming language design -- object-oriented programming, 
+           functional programming and dynamic scripting -- into a simple, coherent syntax.</p>
+           
+           <p>Also, Fun is fun!  Fun is designed by a programmer for programmers.  
+        |]
+ 
+    more_what_is_fun {
+        [|
            <ul>
            <li><b>Object-oriented</b>: Fun has a rich set of OO features, including some unique to
            Fun.  For example, Fun has a <code>sub</code> keyword that works like the <code>super</code> 
