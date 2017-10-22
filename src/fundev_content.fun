@@ -332,7 +332,7 @@ site fundev {
     plain_text_content [|
 
 This is the first paragraph.  It
-consists of three lines of text 
+consists of three lines of text
 followed by an empty line.
 
 This is the second paragraph.  It consists of three sentences, all in one line of text.  This is the third sentence.

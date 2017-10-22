@@ -268,6 +268,7 @@ site fundev {
             
             .content_box {
                 background-color: white;
+                max-width: 49rem;
             }
 
             .content_body {
@@ -486,21 +487,23 @@ site fundev {
     what_is_fun {
         [| <h2>Welcome to Fun</h2>
            
-           <p>Fun is a new kind of programming language.  It's very simple and very
-           powerful.  This is not magic; it comes from taking a different approach to 
-           language design.</p>
+           <p>Fun is a new kind of programming language, simpler than traditional
+           languages yet in many ways more powerful.  This is not magic; it comes from
+           Fun's unique approach to language design.</p>
            
            <p>Fun is simple because it has only one kind of entity, so has no need for 
            distinct mechanisms for creating and using classes, types, functions, variables, objects,
            interfaces etc.  But Fun doesn't give up the functionality they bring; in Fun these 
-           things are roles, not entities.</p>
+           things are not separate entities but roles that any entity can play.</p>
            
-           <p>Fun is powerful because of the way it synthesizes concepts from three of the most
-           productive approaches to programming language design -- object-oriented programming, 
-           functional programming and dynamic scripting -- into a simple, coherent syntax.</p>
+           <p>Fun is powerful because it finds a way to take concepts from three highly productive
+           paradigms -- object-oriented programming, functional programming and dynamic scripting -- 
+           and weave them together into a simple, coherent language.</p>
            
-           <p>Also, Fun is fun!  Fun is designed by a programmer for programmers.  
+           <p>Also, Fun is fun!  Fun is designed by a programmer for programmers, with the
+           chief goal being to remove barriers to expression.</p>  
         |]
+    }
  
     more_what_is_fun {
         [|

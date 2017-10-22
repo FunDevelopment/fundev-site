@@ -11,9 +11,9 @@ How else to begin our tour?  Say hello, Fun:
   }
 
 The above code defines a web site called <code>hello</code>.  (A Fun program is
-automatically a web site.)  The <code>{</code> and <code>}</code> delimit a code 
-block, which is a block containing Fun statements.  This particular block contains 
-a single statement, a definition of a page called <code>index</code>, the default 
+automatically a web site.)  The <code>{</code> and <code>}</code> delimit a code
+block, which is a block containing Fun statements.  This particular block contains
+a single statement, a definition of a page called <code>index</code>, the default
 home page for the site.  
 
 The line

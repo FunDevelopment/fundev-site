@@ -1,5 +1,5 @@
 This is a very brief look at Fun's main features, with examples but with
-little background or explanation.  For a more in-depth account, see 
+little background or explanation.  For a more in-depth account, see
 <a href="overview?article=leisurely_tour">A More Leisurely Tour of Fun</a>.   
 
 
@@ -120,8 +120,8 @@ including:
 * A typed definition has access to its type's constructions (implementation inheritance).
 * An instance of a typed definition can match a parameter of that type when passed as an
 argument to an overloaded definition.
-* An instance of a typed definition can be detected as an instance of that type in a <code>isa</code>
-expression. 
+* An instance of a typed definition can be detected as an instance of that type in
+a <code>isa</code> expression. 
 
 A definition is typed if the definition name is preceded by a type name.  The type name can
 be the name of another definition or a primitive type (<code>int</code>, <code>boolean</code>,
