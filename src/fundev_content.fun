@@ -238,9 +238,9 @@ site fundev {
          **/
      
         eval(mode(: NORMAL_MODE :));
-        //log("mode starts at " + MODE_NAMES[mode]);   
+        log("mode starts at " + MODE_NAMES[mode]);   
         for ln in lns and int i from 0 {
-            //log("line " + i + " first char: " + (int) first_char(ln) + "   first printable char: " + (int) first_printable_char(ln));
+            log("line " + i + " first char: " + (int) first_char(ln) + "   first printable char: " + (int) first_printable_char(ln));
 
             /-- first, handle mode switching --/
             if (strlen(ln) > 0) {
@@ -276,37 +276,37 @@ site fundev {
                 }
             }
             
-            //log(" -- mode now " + MODE_NAMES[mode] + "   strlen(ln) = " + strlen(ln));
-            //log(" -- accumulator size before processing: " + accumulator.count);
-            //if (accumulator.count > 0) { log("   ---- accumulator contents: " + accumulator); }
+            log(" -- mode now " + MODE_NAMES[mode] + "   strlen(ln) = " + strlen(ln));
+            log(" -- accumulator size before processing: " + accumulator.count);
+            if (accumulator.count > 0) { log("   ---- accumulator contents: " + accumulator); }
             
             /-- next, process the current line according to the mode --/
             if (mode == BULLET_MODE) {
                 if (ln) {
                     if (is_normal(ln)) {
-                        //log("appending to last bullet string in place");
+                        log("appending to last bullet string in place");
                         array.set(accumulator, accumulator.count - 1, accumulator[accumulator.count - 1] + ln);
                     } else {
-                        //log("accumulating bullet string");
+                        log("accumulating bullet string");
                         eval(accumulator(: accumulator + trim_bullet(ln) :));
                     }
                 }
             } else if (ln && !is_header(ln)) {
-                //log("accumulating non-header string: " + ln);
+                log("accumulating non-header string: " + ln);
                 eval(accumulator(: accumulator + ln :));
 
             } else if (mode == CODE_MODE) {
-                //log("accumulating empty code string");
+                log("accumulating empty code string");
                 eval(accumulator(: accumulator + " " :));
                 
             } else {
                 if (accumulator) {
-                    //log("constructing content block from accumulated strings");
+                    log("constructing content block from accumulated strings");
                     eval(content_blocks(: content_blocks + content_block_factory(: accumulator :).this :));
                     eval(accumulator(: null :));
                 }
                 if (ln) {
-                    //log("constructing content block from line: " + ln);
+                    log("constructing content block from line: " + ln);
                     eval(content_blocks(: content_blocks + content_block_factory(: ln :).this :));
                 }
             }
@@ -314,7 +314,7 @@ site fundev {
 
         /-- finally, handle dangling content --/
         if (accumulator) {
-            //log("adding dangling content for mode " + MODE_NAMES[mode]);        
+            log("adding dangling content for mode " + MODE_NAMES[mode]);        
             if (mode == CODE_MODE) {
                 eval(content_blocks(: content_blocks + code_block(: accumulator :).this :));
             } else if (mode == BULLET_MODE) {
@@ -468,7 +468,8 @@ Fourth line is plain text.
                 test_log("missing first bullet");
             }
             if (bullet_count > 1) {
-                if (index_of(bullet[2], "second") >= 0 && index_of(bullet[2], "first") < 0) {
+                if (index_of(bullet[2], "second") >= 0 && index_of(bullet[2], "first") < 0
+                       && index_of(bullet[2], "bullet.This") < 0) {
                     "E";
                     test_log("correct second bullet");
                 } else {

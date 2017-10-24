@@ -9,7 +9,7 @@ site fundev {
     test_runner[] test_runners = [ content_parser_tests ]
     
 
-    page(*) tests(params{}) {
+    public page(*) tests(params{}) {
         boolean needs_login = false
         boolean needs_admin = false    
         boolean show_menu = false

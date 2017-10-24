@@ -500,8 +500,8 @@ site fundev {
            paradigms -- object-oriented programming, functional programming and dynamic scripting -- 
            and weave them together into a simple, coherent language.</p>
            
-           <p>Also, Fun is fun!  Fun is designed by a programmer for programmers, with the
-           chief goal being to remove barriers to expression.</p>  
+           <p>Also, Fun is fun!  Fun was designed by a programmer for programmers in order
+           to be enjoyable as well as productive.</p>  
         |]
     }
  
