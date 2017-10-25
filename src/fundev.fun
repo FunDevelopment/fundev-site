@@ -487,21 +487,22 @@ site fundev {
     what_is_fun {
         [| <h2>Welcome to Fun</h2>
            
-           <p>Fun is a new kind of programming language, simpler than traditional
-           languages yet in many ways more powerful.  This is not magic; it comes from
-           Fun's unique approach to language design.</p>
+           <p>Fun is a new kind of programming language.  Fun's unique design makes it simpler 
+           than traditional languages yet in certain ways more powerful.</p>
            
-           <p>Fun is simple because it has only one kind of entity, so has no need for 
-           distinct mechanisms for creating and using classes, types, functions, variables, objects,
-           interfaces etc.  But Fun doesn't give up the functionality they bring; in Fun these 
-           things are not separate entities but roles that any entity can play.</p>
+           <p>Fun is simple because it has only one kind of entity.  Other languages all have
+           distinct syntax for creating and using various kinds of entities such as classes,
+           types, functions, variables, objects and interfaces.  Fun doesn't have all these
+           syntactic mechanisms because in Fun classes, types, functions etc. these are roles,
+           not entities, and roles can be inferred from context.  This works because humans are 
+           good at inferring roles from context.</p>
            
-           <p>Fun is powerful because it finds a way to take concepts from three highly productive
-           paradigms -- object-oriented programming, functional programming and dynamic scripting -- 
-           and weave them together into a simple, coherent language.</p>
+           <p>Fun is powerful because it synthesizes concepts from two great programming
+           paradigms -- object-oriented programming and functional programming -- in the style
+           of a dynamic scripting language.</p>
            
            <p>Also, Fun is fun!  Fun was designed by a programmer for programmers in order
-           to be enjoyable as well as productive.</p>  
+           to be enjoyable as well as productive.</p>
         |]
     }
  
