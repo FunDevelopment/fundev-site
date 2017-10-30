@@ -285,7 +285,7 @@ site fundev {
                 if (ln) {
                     if (is_normal(ln)) {
                         log("appending to last bullet string in place");
-                        array.set(accumulator, accumulator.count - 1, accumulator[accumulator.count - 1] + ln);
+                        array.set(accumulator, accumulator.count - 1, accumulator[accumulator.count - 1] + " " + ln);
                     } else {
                         log("accumulating bullet string");
                         eval(accumulator(: accumulator + trim_bullet(ln) :));
@@ -468,8 +468,7 @@ Fourth line is plain text.
                 test_log("missing first bullet");
             }
             if (bullet_count > 1) {
-                if (index_of(bullet[2], "second") >= 0 && index_of(bullet[2], "first") < 0
-                       && index_of(bullet[2], "bullet.This") < 0) {
+                if (index_of(bullet[2], "second") >= 0 && index_of(bullet[2], "first") < 0) {
                     "E";
                     test_log("correct second bullet");
                 } else {
@@ -654,7 +653,8 @@ Fourth line is plain text.
                 test_log("incorrect first paragraph: " + first_block);
             }
             if (blx.count > 1) {
-                if (index_of(second_block, "Second") >= 0 && index_of(second_block, "Third") > 0) {
+                if (index_of(second_block, "Second") >= 0 && index_of(second_block, "Third") > 0
+                       && index_of(second_block, "bullet.Third") < 0) {
                     "D";
                     test_log("correct bullet");
                 } else {
