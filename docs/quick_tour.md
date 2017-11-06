@@ -76,36 +76,47 @@ definitions.  The following two definitions are exactly equivalent:
             "Hello, World.";
         }
 
-There is yet a third definition form which uses a data block instead of a code block or a
-single construction.  The following definition is exactly equivalent to the two preceding
+A third definition form uses a data block instead of a code block or a single
+construction.  The following definition is exactly equivalent to the two preceding
 definitions (in a standard data block leading and trailing whitespace is trimmed):
 
         say_hello [|
             Hello, World.
         |]
 
-Note that if you actually try to compile the above three definitions together at once the
+If you actually try to compile the above three definitions together at once the
 compile will fail.  You can define a name only once in any particular scope.  But you can
 define the name as often as you like as long as each is in a different scope.  The following
 will compile:
 
-    definition_options {
+    test_definition_options {
     
-        element_definition {
+        element {
             say_hello = "Hello, World."
         }
         
-        code_block_definition {
+        code_block {
             say_hello {
                 "Hello, World.";
             }
         }
         
-        data_block_definition {
+        data_block {
             say_hello [|
                 Hello, World.
             |]
         }
+        
+        if (element.say_hello == code_block.say_hello
+              && code_block.say_hello == data_block.say_hello) [|
+              
+             Ok
+
+        |] else [|
+
+             <span style='color:red'>Fail</span>
+        |]
+        
     }
 
 ###Types

@@ -487,22 +487,37 @@ site fundev {
     what_is_fun {
         [| <h2>Welcome to Fun</h2>
            
-           <p>Fun is a new kind of programming language.  Fun's unique design makes it simpler 
-           than traditional languages yet in certain ways more powerful.</p>
+           <p>Fun is a new programming language that intends to be more expressive than languages
+           that have come before, while at the same time simpler, just as a poem can be more
+           expressive yet simpler than a prose composition that says the same thing.</p>
            
-           <p>Fun is simple because it has only one kind of entity.  Other languages all have
+           <h3>Poetic Programming</h3>
+           
+           <p>Fun is intended for a style of programming that approaches the task more like
+           writing poems than prose.  Poetry accomplishes this by using fewer words, each
+           carrying more meaning, arranged into a melodious and rhythmic whole.  Fun embodies
+           the same values: economy, richness of meaning and beauty of form.</p>
+           
+           <p><b>Economy:</b> Fun is economical by having only one kind of entity.  Other languages have
            distinct syntax for creating and using various kinds of entities such as classes,
            types, functions, variables, objects and interfaces.  Fun doesn't have all these
-           syntactic mechanisms because in Fun classes, types, functions etc. these are roles,
-           not entities, and roles can be inferred from context.  This works because humans are 
-           good at inferring roles from context.</p>
+           syntactic mechanisms because in Fun classes, types, functions and so forth are roles,
+           not entities, and roles can be inferred from context.  This works because humans 
+           happen to be very good at inferring from context.</p>
            
-           <p>Fun is powerful because it synthesizes concepts from two great programming
-           paradigms -- object-oriented programming and functional programming -- in the style
-           of a dynamic scripting language.</p>
+           <p><b>Richness of meaning:</b> Fun achieves this through an especially flexible and 
+           intuitive approach to object-oriented programming.  Fun's inheritance model is deeply 
+           and seemlessly embedded into the language, and is the opposite of rigid.  Inheritance
+           relationships aren't limited to top-down, hierarchical style that is the norm;
+           multiple, lateral (i.e. aspect-oriented) and inside-out inheritance are supported
+           as well.</p>
            
-           <p>Also, Fun is fun!  Fun was designed by a programmer for programmers in order
-           to be enjoyable as well as productive.</p>
+           <p><b>Beauty of form:</b>  Fun is declarative.  A Fun program is not a set of
+           instructions with output being a side effect; a Fun program is a representation of
+           the output.  
+           
+           <p>Finally, Fun is fun!  Fun was designed by a programmer for programmers in order
+           to be enjoyable.  Have Fun!/p>
         |]
     }
  

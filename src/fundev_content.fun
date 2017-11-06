@@ -656,7 +656,7 @@ Fourth line is plain text.
                 if (index_of(second_block, "Second") >= 0 && index_of(second_block, "Third") > 0
                        && index_of(second_block, "bullet.Third") < 0) {
                     "D";
-                    test_log("correct bullet");
+                    test_log("correct bullet: " + second_block);
                 } else {
                     test_log("incorrect bullet: " + second_block);
                 }
