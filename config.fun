@@ -35,11 +35,13 @@
     always_handle_extensions[] = [ "css", "js" ]
 
     /--- configuration variables queried by the server ---/
-    file_base = main_site.filepath
-    boolean files_first = main_site.files_first
     funpath = main_site.funpath
     sitename = main_site.name
     sitepath = main_site.sitepath
+
+    /-- don't define these, so the servlet can --/
+    //file_base = main_site.filepath
+    //boolean files_first = main_site.files_first
     
     file_separator = "/"
 

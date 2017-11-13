@@ -109,17 +109,90 @@ site fundev {
     color main_bgcolor = "#0022AA"
 
     /-------- common user interface ---------------/
-    
+
+    menu_style [|    
+        .menu_box {
+            background-color: #443322;
+            color: #EEEEEE;
+            margin: 0;
+            padding: 0.5rem 0;
+        }
+
+        .menu_box li {
+            display: block;
+            padding: 0.5rem 1rem;
+        }
+        
+        .menu_box ul {
+            padding: 0;
+            margin: 0;
+        }
+       
+        .menu_box a {
+            text-decoration: none;
+        }    
+        
+        .submenu_box {
+            padding-left: 1.2rem;    
+        }
+
+        .menu_item {
+            font-weight: bold;
+            font-size: 1.2rem;
+            font-family: "Arial", sans-serif;
+        }
+
+        .submenu_item {
+            font-weight: bold;
+            font-size: 1rem;
+            font-family: "Arial", sans-serif;
+        }
+        
+        .submenu_owner {
+            font-weight: bold;
+            font-size: 1.2rem;
+            font-family: "Arial", sans-serif;
+            color: #D5D5D7;
+        }
+
+        .selected_item {
+            color: #FFFFAA;
+        }
+
+        .unselected_item {
+            color: #D5DEE7;
+        }
+        
+        .menu_box a:hover {
+            color: #FFFFFF;
+        }
+    |]
+
+    dynamic component menu_box(selected_page, menu_item[] menu_items),
+                              (selected_page, menu_item[] menu_items, boolean is_submenu) {
+
+        component_class = (is_submenu ? "submenu_box" : "menu_box")
+
+        [| <ul> |]
+        for menu_item m in menu_items {
+            [| <li> |]
+            m.show(selected_page);
+            [| </li> |]
+        }
+        [| </ul> |]
+    }
+
     dynamic menu_item(base_page p) {
         base_page pg = p
+        item_class = "menu_item"
         
         dynamic show(selected_page_name) {
             if (selected_page_name == pg.type) {
-                [| <span class="menu_item selected_item"> |]
+                [| <span class="{= item_class; =} selected_item"> |]
                 pg.label;
                 [| </span> |]
             } else { 
-                [| <a class="menu_item unselected_item" href="/ |]
+                [| <a class="{= item_class; =} unselected_item" href="/ |]
                 pg.type;
                 [| "> |]
                 pg.label;
@@ -128,7 +201,28 @@ site fundev {
         }    
     }    
 
-    dynamic menu_item[] main_menu = [ menu_item(index), menu_item(overview), menu_item(docs), menu_item(download) ] // , menu_item(examples) ]
+    dynamic menu_item(*) submenu(label, menu_item[] sub_items) {
+        item_class = "submenu_item"
+        
+        menu_item[] submenu_items = sub_items
+
+        dynamic show(selected_page_name) {
+            [| <span class="submenu_header"> |]
+            label;
+            [| </span> |]
+            menu_box(selected_page_name, submenu_items, true);
+        }
+    }
+
+
+    dynamic menu_item[] main_menu = [ menu_item(index),
+                                      submenu("About", [
+                                          menu_item(quick_tour_page),
+                                          menu_item(leisurely_tour_page),
+                                          menu_item(backstory_page)
+                                      ]),
+                                      menu_item(docs),
+                                      menu_item(download) ]
 
 
     media_queries {
@@ -167,9 +261,6 @@ site fundev {
                    width: 100%;
                    padding: 0;
                }
-               .header_bar {
-                   width: 100%;
-               }
                .menu_box {
                    float: left;
                    width: {= MENU_WIDTH; =}rem;
@@ -194,9 +285,13 @@ site fundev {
         
         label [?]
         
-        style [| 
+        style {
+            main_style;
+            menu_style;
+        }
+        
+        main_style [| 
             html, body { 
-                width: 100%;
                 height: 100%;
                 margin: 0 0 0 0;
                 background-color: {= main_bgcolor; =};
@@ -214,7 +309,7 @@ site fundev {
             .header_bar {
                 background-color: black;
                 color: white;
-                text-align: center;
+                text-align: left;
                 padding: 0.75rem 0;
                 margin: 0;
             }
@@ -223,48 +318,8 @@ site fundev {
                 display: block;
                 width: {= HEADER_LOGO_WIDTH; =}px;
                 height: {= HEADER_LOGO_HEIGHT; =}px;
-                margin-left: auto;
-                margin-right: auto;
             }
 
-            .menu_box {
-                background-color: #443322;
-                color: #EEEEEE;
-                margin: 0;
-                padding: 0.5rem 0;
-            }
-
-            .menu_box li {
-                display: block;
-                padding: 0.5rem 1rem;
-            }
-            
-            .menu_box ul {
-                padding: 0;
-                margin: 0;
-            }
-           
-            .menu_box a {
-                text-decoration: none;
-            }    
-            
-            .menu_item {
-                font-weight: bold;
-                font-size: 1.2rem;
-                font-family: "Arial", sans-serif;
-            }
-
-            .selected_item {
-                color: #FFFFAA;
-            }
-
-            .unselected_item {
-                color: #D5DEE7;
-            }
-            
-            .menu_box a:hover {
-                color: #FFFFFF;
-            }
             
             .content_box {
                 background-color: white;
@@ -396,15 +451,6 @@ site fundev {
             |]
         }
         
-        dynamic component menu_box(menu_item[] menu_items) {
-            component_class = "menu_box"
-
-            [| <ul> |]
-            for menu_item m in menu_items [|
-                <li>{= m.show(page_name); =}</li>
-            |]
-            [| </ul> |]
-        }
 
         base_page this_page = owner
         page_name = owner.type
@@ -419,7 +465,7 @@ site fundev {
             [| <div class="page_wrapper"> |]
             header_bar;
             if (show_menu) {
-                menu_box(main_menu);
+                menu_box(page_name, main_menu);
             }
             [| <div class="content_box"><div class="content_body"> |] 
             sub;
@@ -485,39 +531,42 @@ site fundev {
     }  
 
     what_is_fun {
-        [| <h2>Welcome to Fun</h2>
+        [| <h2>The Fun Programming Language</h2>
            
-           <p>Fun is a new programming language that intends to be more expressive than languages
-           that have come before, while at the same time simpler, just as a poem can be more
-           expressive yet simpler than a prose composition that says the same thing.</p>
+           <p>The goal of Fun is to be both more expressive and simpler than languages
+           that have come before, by following a set of principles called <b>Poetic
+           Programming</b>.</p>
            
-           <h3>Poetic Programming</h3>
+           <p>Poetic Programming is a language paradigm that stresses the same
+           qualities that allow poetry to be both more expressive and simpler than prose:
+           economy (use fewer words), richness (use phrases that have multiple
+           layers of meaning) and beauty (arrange the words and phrases into a melodious and 
+           rhythmic whole).  These are the values that Fun embodies.</p>
            
-           <p>Fun is intended for a style of programming that approaches the task more like
-           writing poems than prose.  Poetry accomplishes this by using fewer words, each
-           carrying more meaning, arranged into a melodious and rhythmic whole.  Fun embodies
-           the same values: economy, richness of meaning and beauty of form.</p>
-           
-           <p><b>Economy:</b> Fun is economical by having only one kind of entity.  Other languages have
+           <ul>
+           <li><b>Economy:</b> Fun is economical by having only one kind of entity.  Other languages have
            distinct syntax for creating and using various kinds of entities such as classes,
-           types, functions, variables, objects and interfaces.  Fun doesn't have all these
-           syntactic mechanisms because in Fun classes, types, functions and so forth are roles,
-           not entities, and roles can be inferred from context.  This works because humans 
-           happen to be very good at inferring from context.</p>
+           types, functions, variables, objects and interfaces.  Fun has all these things, but 
+           doesn't have all the syntactic mechanisms, because in Fun these things are roles,
+           not entities, and roles can be inferred from context.</li>
            
-           <p><b>Richness of meaning:</b> Fun achieves this through an especially flexible and 
-           intuitive approach to object-oriented programming.  Fun's inheritance model is deeply 
-           and seemlessly embedded into the language, and is the opposite of rigid.  Inheritance
-           relationships aren't limited to top-down, hierarchical style that is the norm;
-           multiple, lateral (i.e. aspect-oriented) and inside-out inheritance are supported
-           as well.</p>
+           <li><b>Richness:</b> Fun achieves richness through polymorphism and an especially
+           flexible inheritance model.  Fun supports several kinds of inheritance which can be 
+           combined in various ways to model objects and relationships with much more nuance than
+           is possible with the rigid, hierarchical models of traditional object-oriented languages.</li>
            
-           <p><b>Beauty of form:</b>  Fun is declarative.  A Fun program is not a set of
-           instructions with output being a side effect; a Fun program is a representation of
-           the output.  
+           <li><b>Beauty:</b> Fun is a declarative language.  A Fun program is a description of
+           output.  Most widely used languages are imperative, and their programs are sets of 
+           instructions.  Descriptive language lends itself to beauty in a way that imperative
+           language seldom does.  Moreover, in the case of Fun, description can take almost any 
+           form because Fun allows free mixing of code and data, and because Fun's simple-but-powerful
+           approach to inheritance, comprehension and composition provide an endless range of
+           forms and combinations.  Writing a beautiful program is not guaranteed by Fun, but it is enabled
+           and encouraged.</li>
+           </ul>
            
-           <p>Finally, Fun is fun!  Fun was designed by a programmer for programmers in order
-           to be enjoyable.  Have Fun!/p>
+           <p>Finally, <b>Fun is fun</b>.  Fun was designed by a programmer in order to be enjoyable to
+           programmers.  Have Fun!</p>
         |]
     }
  
@@ -657,6 +706,19 @@ site fundev {
     global article leisurely_tour_article = overview_article("leisurely_tour", "A More Leisurely Tour of Fun");
     global article backstory_article = overview_article("backstory", "Fun Backstory")
 
+    public article_page(quick_tour_article) quick_tour_page [/] 
+    public article_page(leisurely_tour_article) leisurely_tour_page [/] 
+    public article_page(backstory_article) backstory_page [/] 
+
+
+    public base_page article_page(article a) {
+        boolean needs_login = false    
+
+        label = a.title
+    
+        show_article(a);
+    }
+
    
     public base_page(*) overview(params{}) {
         boolean needs_login = false    
@@ -679,7 +741,7 @@ site fundev {
     }
 
     dynamic include_content(doc_name) {
-        include_file(main_site.filepath + "/docs/" + doc_name + ".md");
+        include_file(file_base + "/docs/" + doc_name + ".md");
     }
 
 
