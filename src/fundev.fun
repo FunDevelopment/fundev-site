@@ -98,15 +98,15 @@ site fundev {
 
     /-------- styles and appearance constants -----/
 
-    static SPLASH_LOGO = "images/fun-logo-280x120.png"
-    static HEADER_LOGO = "images/fun-logo-140x60.png"
+    static SPLASH_LOGO = "images/fun-logo-blue-bg-280x120.png"
+    static HEADER_LOGO = "images/fun-logo-blue-bg-140x60.png"
     static int HEADER_LOGO_WIDTH = 140
     static int HEADER_LOGO_HEIGHT = 60
     static int HEADER_MIN_WIDTH = 20
     static int MENU_WIDTH = 13
     static int CONTENT_MIN_WIDTH = 36
 
-    color main_bgcolor = "#0022AA"
+    color main_bgcolor = "#1701BC"
 
     /-------- common user interface ---------------/
 
@@ -148,7 +148,7 @@ site fundev {
             font-family: "Arial", sans-serif;
         }
         
-        .submenu_owner {
+        .submenu_header {
             font-weight: bold;
             font-size: 1.2rem;
             font-family: "Arial", sans-serif;
@@ -202,7 +202,7 @@ site fundev {
     }    
 
     dynamic menu_item(*) submenu(label, menu_item[] sub_items) {
-        item_class = "submenu_item"
+        item_class = "submenu"
         
         menu_item[] submenu_items = sub_items
 
@@ -216,7 +216,7 @@ site fundev {
 
 
     dynamic menu_item[] main_menu = [ menu_item(index),
-                                      submenu("About", [
+                                      submenu("A Tour of Fun", [
                                           menu_item(quick_tour_page),
                                           menu_item(leisurely_tour_page),
                                           menu_item(backstory_page)
@@ -240,7 +240,7 @@ site fundev {
                .header_bar {
                    width: 100%;
                }
-               .menu_box {
+               .side_box {
                    width: 100%;
                }
                .content_box {
@@ -261,7 +261,8 @@ site fundev {
                    width: 100%;
                    padding: 0;
                }
-               .menu_box {
+               .side_box {
+                   position: fixed;
                    float: left;
                    width: {= MENU_WIDTH; =}rem;
                }
@@ -280,8 +281,6 @@ site fundev {
     
         boolean needs_login [?]    
         boolean needs_admin = false
-        
-        boolean show_menu = true
         
         label [?]
         
@@ -307,11 +306,12 @@ site fundev {
             }
             
             .header_bar {
-                background-color: black;
+                background-color: #1701BC;
                 color: white;
                 text-align: left;
-                padding: 0.75rem 0;
+                padding: 0.75rem 1rem;
                 margin: 0;
+                width: 11rem;
             }
 
             .header_bar img {
@@ -320,11 +320,22 @@ site fundev {
                 height: {= HEADER_LOGO_HEIGHT; =}px;
             }
 
+            .side_box {
+                margin: 0;
+                padding: 0;
+            }
             
             .content_box {
                 background-color: white;
                 max-width: 49rem;
             }
+
+            .content_header {
+                position: fixed;
+                height: {= HEADER_LOGO_HEIGHT; =}px;
+                background-color: #D5DEE7;
+            }
+                
 
             .content_body {
                 color: black;
@@ -446,9 +457,7 @@ site fundev {
         component header_bar {
             component_class = "header_bar"
             
-            [| <img src="{= HEADER_LOGO; =}">
-               a fun(ctional) programming language                       
-            |]
+            [| <img src="{= HEADER_LOGO; =}"> |]
         }
         
 
@@ -462,12 +471,12 @@ site fundev {
 
         } else if (!needs_admin || authenticate_admin(this_username)) {
             log("we're good");
-            [| <div class="page_wrapper"> |]
+            [| <div class="page_wrapper"><div class="side_box"> |]
             header_bar;
-            if (show_menu) {
-                menu_box(page_name, main_menu);
-            }
-            [| <div class="content_box"><div class="content_body"> |] 
+            menu_box(page_name, main_menu);
+            [| 
+               </div><div class="content_box"><div class="content_body">
+            |] 
             sub;
             [| </div></div></div> |]
 
@@ -533,40 +542,40 @@ site fundev {
     what_is_fun {
         [| <h2>The Fun Programming Language</h2>
            
-           <p>The goal of Fun is to be both more expressive and simpler than languages
-           that have come before, by following a set of principles called <b>Poetic
-           Programming</b>.</p>
+           <p>The goal of Fun is to be expressive and simple.  This is sometimes seen as
+           a tradeoff; you can have more features and be more expressive, or you can have
+           fewer features and be simpler.  Fun is predicated on the notion that with the
+           right design you can be more expressive and simpler at the same time.  Fun's
+           secret for achieving this is a paradigm called <b>Poetic Programming</b>.</p>
            
-           <p>Poetic Programming is a language paradigm that stresses the same
-           qualities that allow poetry to be both more expressive and simpler than prose:
-           economy (use fewer words), richness (use phrases that have multiple
-           layers of meaning) and beauty (arrange the words and phrases into a melodious and 
-           rhythmic whole).  These are the values that Fun embodies.</p>
+           <p><b>Poetic Programming</b> asserts that the same qualities that allow poetry to be 
+           simultaneously more expressive and simpler than prose can work for programming as well:
+           economy (use fewer words and shorter phrases), richness (use words and phrases that 
+           have multiple layers of meaning) and beauty (arrange the words and phrases into a 
+           melodious and rhythmic whole).  These are the principles that have guided the design of
+           Fun.</p>
            
            <ul>
-           <li><b>Economy:</b> Fun is economical by having only one kind of entity.  Other languages have
-           distinct syntax for creating and using various kinds of entities such as classes,
-           types, functions, variables, objects and interfaces.  Fun has all these things, but 
-           doesn't have all the syntactic mechanisms, because in Fun these things are roles,
-           not entities, and roles can be inferred from context.</li>
+           <li><b>Economy:</b> Fun is economical by having only one kind of entity.  Other 
+           languages have distinct syntax for creating and using various kinds of entities such
+           as classes, types, functions, variables, objects and interfaces.  Fun has all these 
+           things, but doesn't have all the syntactic mechanisms, because in Fun these things 
+           are roles, not entities, and roles can be inferred from context.</li>
            
-           <li><b>Richness:</b> Fun achieves richness through polymorphism and an especially
-           flexible inheritance model.  Fun supports several kinds of inheritance which can be 
-           combined in various ways to model objects and relationships with much more nuance than
-           is possible with the rigid, hierarchical models of traditional object-oriented languages.</li>
+           <li><b>Richness:</b> Fun achieves richness through polymorphism and <b>polyinheritance</b>
+           -- multiple inheritance channels which can be combined to model objects and relationships 
+           with much more nuance than is possible with standard object-oriented languages.  This is
+           on top of the layers of meaning that come with Fun's role-oriented syntax.</li>
            
-           <li><b>Beauty:</b> Fun is a declarative language.  A Fun program is a description of
-           output.  Most widely used languages are imperative, and their programs are sets of 
-           instructions.  Descriptive language lends itself to beauty in a way that imperative
-           language seldom does.  Moreover, in the case of Fun, description can take almost any 
-           form because Fun allows free mixing of code and data, and because Fun's simple-but-powerful
-           approach to inheritance, comprehension and composition provide an endless range of
-           forms and combinations.  Writing a beautiful program is not guaranteed by Fun, but it is enabled
-           and encouraged.</li>
+           <li><b>Beauty:</b> The aesthetics of code is at the heart of Fun's design.  For example,
+           Fun is a declarative language.  A Fun program is a description of output.  Most widely used
+           languages are imperative, and their programs are lists of instructions.  Descriptive language 
+           lends itself to beauty; lists of instructions, not so much.  Writing a beautiful 
+           program is not guaranteed by Fun, but it is enabled and encouraged.</li>
            </ul>
            
-           <p>Finally, <b>Fun is fun</b>.  Fun was designed by a programmer in order to be enjoyable to
-           programmers.  Have Fun!</p>
+           <p>Finally, <b>Fun is fun</b>.  Fun was designed by a programmer in order to be enjoyable
+           for programmers.  Have Fun!</p>
         |]
     }
  
@@ -702,9 +711,9 @@ site fundev {
         content = include_content(doc_name)
     }
 
-    global article quick_tour_article = overview_article("quick_tour", "A Brief Tour of Fun");
-    global article leisurely_tour_article = overview_article("leisurely_tour", "A More Leisurely Tour of Fun");
-    global article backstory_article = overview_article("backstory", "Fun Backstory")
+    global article quick_tour_article = overview_article("quick_tour", "Quick Tour");
+    global article leisurely_tour_article = overview_article("leisurely_tour", "Leisurely Tour");
+    global article backstory_article = overview_article("backstory", "Backstage Tour")
 
     public article_page(quick_tour_article) quick_tour_page [/] 
     public article_page(leisurely_tour_article) leisurely_tour_page [/] 
