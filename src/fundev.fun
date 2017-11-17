@@ -1,6 +1,6 @@
 /**  fundev.fun
  *
- *   Official Bento web site.
+ *   Official web site for the Fun programming language.
  *
  *
  **/
@@ -715,9 +715,15 @@ site fundev {
     global article leisurely_tour_article = overview_article("leisurely_tour", "Leisurely Tour");
     global article backstory_article = overview_article("backstory", "Backstage Tour")
 
-    public article_page(quick_tour_article) quick_tour_page [/] 
-    public article_page(leisurely_tour_article) leisurely_tour_page [/] 
-    public article_page(backstory_article) backstory_page [/] 
+    public article_page(quick_tour_article) quick_tour_page = article_page(quick_tour_article) 
+    public article_page(leisurely_tour_article) leisurely_tour_page = article_page(leisurely_tour_article) 
+    public article_page(backstory_article) backstory_page = article_page(backstory_article) 
+
+public tt {
+ quick_tour_page.type;
+ leisurely_tour_page.type;
+ backstory_page.type;
+}
 
 
     public base_page article_page(article a) {

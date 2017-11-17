@@ -66,7 +66,7 @@
 
     site_config fundev_config {
         name = "fundev"
-        funpath = "src"
+        funpath = "src:../three/src"
     }    
 
     /** The site config table allows lookup of site configuration by name.  It is
