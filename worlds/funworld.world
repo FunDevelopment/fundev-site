@@ -1,15 +1,15 @@
 /**
- *  fundev_world.fun
+ *  funworld.world
  *
  *  3D scene for Fun web site
  *
  **/
 
-site fundev {
+world funworld {
 
     adopt three
     
-    initial_scene_name = "home"
+    initial_scene_name = "funhome"
     
     /--- materials ---/
 
@@ -50,7 +50,7 @@ site fundev {
         }
     }
 
-    scene home {
+    scene funhome {
         three_object[] objs = [
             blue_cube,
             light_group
