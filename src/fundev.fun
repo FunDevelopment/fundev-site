@@ -802,15 +802,15 @@ public tt {
     /---- pseudofiles ----/
 
     js {
-        lib {
+        libs {
             three {
                 public js {
-                    include_file("lib/three.js");
+                    include_file("../../3p/libs/three.js");
                 }
             }
             stats {
                 public js {
-                    include_file("../../3p/lib/stats.min.js");
+                    include_file("../../3p/libs/stats.min.js");
                 }
             }
         }
