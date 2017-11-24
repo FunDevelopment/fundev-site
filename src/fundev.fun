@@ -7,6 +7,8 @@
 
 site fundev {
 
+    adopt three
+
     /-------- global values -----------------------/
 
     global User_Table(utbl{}){} = utbl
@@ -305,6 +307,11 @@ site fundev {
                 background-color: #D5DEE7;
             }
             
+            .viewer_container {
+                width: 100%;
+                height: 100%;
+            }
+            
             .header_bar {
                 background-color: #1701BC;
                 color: white;
@@ -536,24 +543,85 @@ site fundev {
 
         label = "Home"
         
+        /---------------------/
+        /----  the scene  ----/
+
+        scene sample_scene {
+            phong_material blue_material {
+                undecorated color = 0x3333CC
+            }
+            
+            mesh(cube_geometry(7, 7, 7), blue_material) blue_cube {
+                position pos = position(0, 2, 0)
+                on_drag {
+                    log("blue_cube.on_drag called");
+                }
+            }
+
+            point_light(0xAAAAAA) soft_light {
+                position pos = position(0, 12, 40)
+            }
+
+            three_object[] objs = [
+                blue_cube,
+                soft_light
+            ]
+            
+            javascript next_frame {
+                blue_cube.rotate(0.002, -0.002, -0.001);
+            }
+        }
+      
+
+        /--------------------/
+        /---- the canvas ----/
+    
+        three_component(*) tc(scene s),(params{}) {
+            style  [| position: absolute; top: 0; left: 0;
+                      width: 100%; height: 100%; 
+                      margin: 0; padding: 0;
+                      z-index: 0;
+                   |]
+
+            canvas_id = "tc"
+            
+            drag_controls(*) my_drag_controls(id, three_object obj) {
+                boolean z_lock = true
+            }
+
+            controls[] canvas_controls = [ my_drag_controls(canvas_id, s) ]
+        }        
+
+        [| 
+           <div class="viewer_container">
+           <div style="position: relative; top: 2rem; left: 2rem;
+                       width: 40rem; padding: 1.5rem;
+                       color: #88FFAA;
+                       z-index: 100; background: rgba(255, 255, 255, 0.1)" >
+        |]
         what_is_fun;
+        [| </div> |] 
+        tc(sample_scene);
+        [| </div> |] 
     }  
 
     what_is_fun {
         [| <h2>The Fun Programming Language</h2>
            
-           <p>The goal of Fun is to be expressive and simple.  This is sometimes seen as
-           a tradeoff; you can have more features and be more expressive, or you can have
-           fewer features and be simpler.  Fun is predicated on the notion that with the
-           right design you can be more expressive and simpler at the same time.  Fun's
-           secret for achieving this is a paradigm called <b>Poetic Programming</b>.</p>
+           <p>Fun is an open source programming language designed to be expressive and 
+           simple.  Language designers sometimes see this as a tradeoff; you can have 
+           more features and be more expressive, or you can have fewer features and be 
+           simpler.  Fun is predicated on the notion that with the right design you can 
+           be more expressive and simpler at the same time.</p>
            
-           <p><b>Poetic Programming</b> asserts that the same qualities that allow poetry to be 
-           simultaneously more expressive and simpler than prose can work for programming as well:
-           economy (use fewer words and shorter phrases), richness (use words and phrases that 
-           have multiple layers of meaning) and beauty (arrange the words and phrases into a 
-           melodious and rhythmic whole).  These are the principles that have guided the design of
-           Fun.</p>
+           <p>Fun's secret for achieving expressiveness and simplicity at the same time is 
+           a design philosophy called <b>Poetic Programming</b>.  Poetic Programming
+           asserts that the same qualities that allow poetry to be simultaneously more 
+           expressive and simpler than prose can work for programming as well: economy
+           (use fewer words and shorter phrases), richness (use words and phrases that 
+           have multiple layers of meaning) and beauty (arrange the words and phrases 
+           into a melodious, rhythmic and visually pleasing whole).  These are the 
+           principles that have guided the design of Fun.</p>
            
            <ul>
            <li><b>Economy:</b> Fun is economical by having only one kind of entity.  Other 
@@ -562,20 +630,21 @@ site fundev {
            things, but doesn't have all the syntactic mechanisms, because in Fun these things 
            are roles, not entities, and roles can be inferred from context.</li>
            
-           <li><b>Richness:</b> Fun achieves richness through polymorphism and <b>polyinheritance</b>
-           -- multiple inheritance channels which can be combined to model objects and relationships 
-           with much more nuance than is possible with standard object-oriented languages.  This is
-           on top of the layers of meaning that come with Fun's role-oriented syntax.</li>
+           <li><b>Richness:</b> Because entities have multiple roles, Fun statements naturally
+           have multiple levels of meaning.  Further richness flows from object-oriented
+           features such as polymorphism and <b>polyinheritance</b> -- the ability to inherit 
+           in multiple ways, including some that are not available in standard OO languages.</li>
            
-           <li><b>Beauty:</b> The aesthetics of code is at the heart of Fun's design.  For example,
-           Fun is a declarative language.  A Fun program is a description of output.  Most widely used
-           languages are imperative, and their programs are lists of instructions.  Descriptive language 
-           lends itself to beauty; lists of instructions, not so much.  Writing a beautiful 
-           program is not guaranteed by Fun, but it is enabled and encouraged.</li>
+           <li><b>Beauty:</b> The aesthetics of code is at the heart of Fun's design.  Among other
+           things, Fun is a declarative language.  Most widely used languages are imperative, and 
+           their programs are lists of instructions.  A Fun program is a description of output.  
+           Descriptive language lends itself to beauty; lists of instructions, not so much.  
+           Writing a beautiful program is not guaranteed by Fun, but it is enabled and 
+           encouraged.</li>
            </ul>
            
            <p>Finally, <b>Fun is fun</b>.  Fun was designed by a programmer in order to be enjoyable
-           for programmers.  Have Fun!</p>
+           to program in.  Have Fun!</p>
         |]
     }
  
@@ -805,12 +874,12 @@ public tt {
         libs {
             three {
                 public js {
-                    include_file("../../3p/libs/three.js");
+                    include_file("../3p/js/libs/three.js");
                 }
             }
             stats {
                 public js {
-                    include_file("../../3p/libs/stats.min.js");
+                    include_file("../3p/js/libs/stats.min.js");
                 }
             }
         }
