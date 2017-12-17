@@ -108,7 +108,7 @@ site fundev {
     static int MENU_WIDTH = 13
     static int CONTENT_MIN_WIDTH = 36
 
-    color main_bgcolor = "#1701BC"
+    color main_bgcolor = "white"
 
     /-------- common user interface ---------------/
 
@@ -286,6 +286,8 @@ site fundev {
         
         label [?]
         
+        scene bg_scene [?]
+        
         style {
             main_style;
             menu_style;
@@ -304,7 +306,9 @@ site fundev {
             }
 
             .page_wrapper {
-                background-color: #D5DEE7;
+                background-color: black;
+                width: 100%;
+                height: 100%;
             }
             
             .viewer_container {
@@ -330,10 +334,10 @@ site fundev {
             .side_box {
                 margin: 0;
                 padding: 0;
+                z-index: 1000;
             }
             
             .content_box {
-                background-color: white;
                 max-width: 49rem;
             }
 
@@ -371,6 +375,14 @@ site fundev {
             .content_body code {
                 color: #0000CC; 
                 font-size: 0.9rem;
+            }
+
+            .content_panel {
+                width: 40rem;
+                padding: 1.5rem;
+                color: #88FFAA;
+                z-index: 100;
+                background: rgba(31, 31, 31, 0.75);
             }
 
             .centered_container {
@@ -437,10 +449,11 @@ site fundev {
             
             h2 {
                 margin: 0;
-                font-size: 1.1rem;
+                font-size: 1.25rem;
                 line-height: 1;
-                padding-top: 1.5rem;
-                color: #1100DD;
+                color: white;
+                font-family: "Courier", monospace;
+                font-weight: bold;
             }
             
             {= media_queries; =}
@@ -461,6 +474,20 @@ site fundev {
             [| </div> |]
         }
         
+        /--------------------/
+        /---- the canvas ----/
+    
+        three_component(*) tc(scene s),(params{}) {
+            style  [| position: absolute; top: 0; left: 0;
+                      width: 100%; height: 100%; 
+                      margin: 0; padding: 0;
+                      z-index: 0;
+                   |]
+
+            canvas_id = "tc"
+            
+        }        
+
         component header_bar {
             component_class = "header_bar"
             
@@ -485,7 +512,11 @@ site fundev {
                </div><div class="content_box"><div class="content_body">
             |] 
             sub;
-            [| </div></div></div> |]
+            [| </div></div> |]
+            with (bg_scene) {
+                tc(bg_scene);
+            }
+            [| </div> |] 
 
         } else {
             log("access to " + page_name + " by " + this_username + " denied");
@@ -546,15 +577,15 @@ site fundev {
         /---------------------/
         /----  the scene  ----/
 
-        scene sample_scene {
+        scene bg_scene {
             phong_material blue_material {
                 undecorated color = 0x3333CC
             }
             
-            mesh(cube_geometry(7, 7, 7), blue_material) blue_cube {
-                position pos = position(0, 2, 0)
+            mesh(sphere_geometry(16, 64, 64), blue_material) blue_sphere {
+                position pos = position(0, -8, 0)
                 on_drag {
-                    log("blue_cube.on_drag called");
+                    log("blue_sphere.on_drag called");
                 }
             }
 
@@ -563,45 +594,21 @@ site fundev {
             }
 
             three_object[] objs = [
-                blue_cube,
+                blue_sphere,
                 soft_light
             ]
             
             javascript next_frame {
-                blue_cube.rotate(0.002, -0.002, -0.001);
+                blue_sphere.rotate(0.002, -0.002, -0.001);
             }
         }
       
 
-        /--------------------/
-        /---- the canvas ----/
-    
-        three_component(*) tc(scene s),(params{}) {
-            style  [| position: absolute; top: 0; left: 0;
-                      width: 100%; height: 100%; 
-                      margin: 0; padding: 0;
-                      z-index: 0;
-                   |]
-
-            canvas_id = "tc"
-            
-            drag_controls(*) my_drag_controls(id, three_object obj) {
-                boolean z_lock = true
-            }
-
-            controls[] canvas_controls = [ my_drag_controls(canvas_id, s) ]
-        }        
 
         [| 
-           <div class="viewer_container">
-           <div style="position: relative; top: 2rem; left: 2rem;
-                       width: 40rem; padding: 1.5rem;
-                       color: #88FFAA;
-                       z-index: 100; background: rgba(255, 255, 255, 0.1)" >
+           <div class="content_panel" style="position: relative; top: 1rem; left: 2rem;" >
         |]
         what_is_fun;
-        [| </div> |] 
-        tc(sample_scene);
         [| </div> |] 
     }  
 
@@ -611,7 +618,7 @@ site fundev {
            <p>Fun is an open source programming language designed to be expressive and 
            simple.  Language designers sometimes see this as a tradeoff; you can have 
            more features and be more expressive, or you can have fewer features and be 
-           simpler.  Fun is predicated on the notion that with the right design you can 
+           simpler.  Fun shows that with the right design you can 
            be more expressive and simpler at the same time.</p>
            
            <p>Fun's secret for achieving expressiveness and simplicity at the same time is 
