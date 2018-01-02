@@ -18,6 +18,7 @@ site fundev {
 
     init {
         load_users("users", "admins");
+        three.set_logging_level(three.LOG_DEBUG);
     }
     
     session_init {
@@ -306,9 +307,10 @@ site fundev {
             }
 
             .page_wrapper {
-                background-color: black;
+                padding: 1rem;
+                background-color: #EAEAEF;
                 width: 100%;
-                height: 100%;
+                min-height: 100%;
             }
             
             .viewer_container {
@@ -338,6 +340,7 @@ site fundev {
             }
             
             .content_box {
+                background-color: white;
                 max-width: 49rem;
             }
 
@@ -449,9 +452,9 @@ site fundev {
             
             h2 {
                 margin: 0;
-                font-size: 1.25rem;
+                font-size: 1.5rem;
                 line-height: 1;
-                color: white;
+                color: blue;
                 font-family: "Courier", monospace;
                 font-weight: bold;
             }
@@ -573,6 +576,14 @@ site fundev {
         boolean needs_login = false    
 
         label = "Home"
+
+        what_is_fun;
+    }  
+
+    public base_page(*) index3D(params{}) {
+        boolean needs_login = false    
+
+        label = "Home"
         
         /---------------------/
         /----  the scene  ----/
@@ -580,13 +591,28 @@ site fundev {
         scene bg_scene {
             phong_material blue_material {
                 undecorated color = 0x3333CC
+                int side = BACK_SIDE
+                float opacity = 0.55
+                boolean transparent = true
             }
             
-            mesh(sphere_geometry(16, 64, 64), blue_material) blue_sphere {
-                position pos = position(0, -8, 0)
+            mesh(sphere_geometry(100, 64, 64), blue_material) blue_sphere {
+                position pos = position(0, 0, 0)
                 on_drag {
                     log("blue_sphere.on_drag called");
                 }
+            }
+
+            phong_material sky_dome_material {
+                int side = BACK_SIDE
+                float opacity = 0.5
+                boolean transparent = true
+                undecorated map = load_texture("images/sky_fyros_dusk_fair.png")
+            }
+            
+            mesh(sphere_geometry(800, 64, 32), sky_dome_material) sky_dome {
+                position pos = position(0, -690, 0)
+                rotation rot = rotation(0, 0, 0.5 * 3.14159)
             }
 
             point_light(0xAAAAAA) soft_light {
@@ -594,12 +620,12 @@ site fundev {
             }
 
             three_object[] objs = [
-                blue_sphere,
+                sky_dome,
                 soft_light
             ]
             
             javascript next_frame {
-                blue_sphere.rotate(0.002, -0.002, -0.001);
+                sky_dome.rotate(0, 0.00005, 0);
             }
         }
       
@@ -796,13 +822,23 @@ site fundev {
     public article_page(backstory_article) backstory_page = article_page(backstory_article) 
 
 public tt {
+ article_page[] pp = [ quick_tour_page, leisurely_tour_page ]
+ for article_page ap in pp {
+    show(ap);
+ }
+ show(article_page ap) {
+  article_page app = ap
+  app.type;
+  app.label;
+ }
+
+ br; br;
  quick_tour_page.type;
- leisurely_tour_page.type;
- backstory_page.type;
+ quick_tour_page.label;
 }
 
 
-    public base_page article_page(article a) {
+    dynamic public base_page article_page(article a) {
         boolean needs_login = false    
 
         label = a.title
