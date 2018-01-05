@@ -350,6 +350,16 @@ site fundev {
                 background-color: #D5DEE7;
             }
                 
+            .content_main_points li {
+                display: block;
+                padding: 0.5rem 1rem;
+            }
+        
+            .content_main_points ul {
+                padding: 0;
+                margin: 0;
+                list-style-type: square;
+            }
 
             .content_body {
                 color: black;
@@ -577,7 +587,20 @@ site fundev {
 
         label = "Home"
 
-        what_is_fun;
+        [| <h2>The Fun Programming Language is</h2>
+           <ul>
+           <li>Simple and expressive</li>
+           <div>{= what_is_fun; =}</div>
+           <li>Declarative</li>
+           <div></div>
+           <li>Object-Oriented</li>
+           <div></div>
+           <li>Web-Oriented</li>
+           <div></div>
+           <li>Fun!</li>
+           <div></div>
+           </ul>
+        |]
     }  
 
     public base_page(*) index3D(params{}) {
@@ -632,15 +655,15 @@ site fundev {
 
 
         [| 
-           <div class="content_panel" style="position: relative; top: 1rem; left: 2rem;" >
+           <div class="content_panel" style="position: relative; top: 1rem; left: 2rem;">
+           <h2>The Fun Programming Language</h2>
         |]
         what_is_fun;
         [| </div> |] 
     }  
 
     what_is_fun {
-        [| <h2>The Fun Programming Language</h2>
-           
+        [| 
            <p>Fun is an open source programming language designed to be expressive and 
            simple.  Language designers sometimes see this as a tradeoff; you can have 
            more features and be more expressive, or you can have fewer features and be 
