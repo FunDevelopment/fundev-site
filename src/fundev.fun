@@ -311,6 +311,7 @@ site fundev {
                 background-color: #EAEAEF;
                 width: 100%;
                 min-height: 100%;
+                overflow: hidden;
             }
             
             .viewer_container {
@@ -396,6 +397,32 @@ site fundev {
                 color: #88FFAA;
                 z-index: 100;
                 background: rgba(31, 31, 31, 0.75);
+            }
+
+            .main_point {
+                color: saddlebrown;
+                background-color: white;
+                font-size: 1.25rem;
+                padding: 0.25rem;
+                display: block;
+                list-style-type: square;
+            }
+            
+            .main_point_body {
+                overflow: hidden;
+                transition: transform 0.67s ease-out, height 0.67s ease-out;
+            }
+
+            .active, .main_point:hover {
+                background-color: gold; 
+            }
+            
+            .point_closed {
+                height: 0;
+            }
+
+            .point_open {
+                height: 100%;
             }
 
             .centered_container {
@@ -587,20 +614,75 @@ site fundev {
 
         label = "Home"
 
-        [| <h2>The Fun Programming Language is</h2>
-           <ul>
-           <li>Simple and expressive</li>
-           <div>{= what_is_fun; =}</div>
-           <li>Declarative</li>
-           <div></div>
-           <li>Object-Oriented</li>
-           <div></div>
-           <li>Web-Oriented</li>
-           <div></div>
-           <li>Fun!</li>
-           <div></div>
-           </ul>
+        static javascript toggle_point [|
+            this.classList.toggle('point_active');
+            var div = this.nextElementSibling;
+            if (div.classList.contains('point_open')) {
+                div.classList.remove('point_open');
+                collapseElement(div);
+                div.classList.add('point_closed');
+            } else {
+                div.classList.remove('panel_closed');
+                expandElement(div);
+                div.classList.add('point_open');
+            }
         |]
+
+        static javascript accordion_functions [|
+            function collapseElement(element) {
+                element.style.height = 0 + 'px';
+/*****
+                var height = element.scrollHeight;
+                var transition = element.style.transition;
+                element.style.transition = '';
+                requestAnimationFrame(function() {
+                    element.style.height = height + 'px';
+                    requestAnimationFrame(function() {
+                        element.style.transition = transition;
+                        element.style.height = 0 + 'px';
+                    });
+                });
+*****/
+            }
+
+            function expandElement(element) {
+                var height = element.scrollHeight;
+                element.style.height = height + 'px';
+                element.addEventListener('transitionend', function handle_end(e) {
+                    element.removeEventListener('transitionend', handle_end);
+                    element.style.height = null;
+                });
+
+            }
+        |]
+        
+
+        dynamic main_point(pt_label, pt_body) {
+            [| <li class="main_point" onclick="{= toggle_point; =}"> |]
+            pt_label;
+            [| </li><div class="main_point_body point_closed"> |]
+            pt_body;
+            [| </div> |]
+        }
+
+
+        [| <div class="main_panel content_main_points">
+           <h2>The Fun Programming Language is</h2>
+           <ul>
+        |]
+        
+        main_point("Simple and Expressive", expressive_and_simple);
+        main_point("Declarative and Flexibly Functional", declarative);
+        main_point("Object-Oriented", object_oriented);
+        main_point("Web-Oriented", web_oriented);
+        main_point("Automated State Management", automated_state_management);
+        main_point("Fun is Fun!", fun_is_fun);
+
+        [| </ul></div><script> |]
+        
+        accordion_functions;
+        
+        [| </script> |]
     }  
 
     public base_page(*) index3D(params{}) {
@@ -661,6 +743,61 @@ site fundev {
         what_is_fun;
         [| </div> |] 
     }  
+
+    expressive_and_simple [|
+        <p>Fun is an open source programming language designed to be simple and 
+        expressive.  Language designers sometimes see this as a tradeoff; you can have 
+        more features and be more expressive, or you can have fewer features and be 
+        simpler.  Fun shows that with the right design you can 
+        be more expressive and simpler at the same time.</p>
+       
+        <p>Fun's secret for achieving expressiveness and simplicity at the same time is 
+        a design philosophy called <b>Poetic Programming</b>.  Poetic Programming
+        asserts that the same qualities that allow poetry to be simultaneously more 
+        expressive and simpler than prose can work for programming as well: economy
+        (use fewer words and shorter phrases), richness (use words and phrases that 
+        have multiple layers of meaning) and beauty (arrange the words and phrases 
+        into a melodious, rhythmic and visually pleasing whole).  These are the 
+        principles that have guided the design of Fun.</p>
+    |]
+    
+    declarative [|
+        <p>A Fun program is a description of output, not a list of commands.  Fun is not
+        strictly functional, because this description is not limited to functions -- it
+        can also include procedural-style control structures (conditionals and loops)
+        and template-style embedded data (HTML, CSS and Javascript).  Another departure
+        from strict functional programming is Fun's automated state management.</p>
+    |]
+    
+    object_oriented [|
+        <p>Fun has a rich set of OO features, including some unique to Fun.  For example,
+        Fun has a <code>sub</code> keyword that works like the <code>super</code> keyword 
+        in Java, C++ and other languages, only in reverse: it allows a superclass to 
+        invoke its subclass.  Instead of the subclass invoking the superclass   This turns 
+        out to be very useful when defining a class hierarchy for things like web pages or
+        message packets, where the stuff on the outside is created by the superclass and the
+        stuff on the inside by the subclass.</p>
+    |]
+    
+    web_oriented [|
+        <p>Fun has a built-in web server, and a program doesn't have to do anything special
+        to be a web site.  Moreover, Fun allows free mixing of code and data, making it an
+        excellent templating language.</p>
+    |]
+    
+    automated_state_management [|
+        <p>As a declarative, flex-functional language, Fun has no variables and no assignment
+        operator.  But Fun does support state by building caching into the language.  By default,
+        if a function is referenced multiple times in a local scope, only the first reference
+        results in a function call; the return value is cached, and subsequent references make
+        use of the cached value.</p>
+    |]
+        
+    fun_is_fun [|
+        <p>Fun was designed by a programmer in order to be enjoyable to program in.  And it
+        is.  Have Fun!</p>
+    |]
+    
 
     what_is_fun {
         [| 
