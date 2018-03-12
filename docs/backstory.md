@@ -1,4 +1,4 @@
-##Bento Backstory
+##Fun Backstory
 
 ###A templating language with super powers
 
@@ -7,7 +7,8 @@ templating language, of which there are many in wide use.  The one thing they ha
 in common, other than the ability to embed code in data, is limited ambition.  They 
 aim to provide templating, and nothing else.
 
-Bento began as a project to expand the scope of templating very modestly, by supporting 
+Fun is a direct descendant of a language called Bento, which began in 2002 
+as a project to expand the scope of templating very modestly, by supporting 
 object-oriented templating as a way to solve the problem of reuse.  In a web site of 
 any complexity, reuse of code, including templating code, is critical.  Each page is a 
 combination of features, some that are standard throughout the site, some that are 
