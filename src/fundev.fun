@@ -710,13 +710,13 @@ site fundev {
 
             phong_material sky_dome_material {
                 int side = BACK_SIDE
-                float opacity = 0.5
+                float opacity = 0.75
                 boolean transparent = true
-                undecorated map = load_texture("images/sky_fyros_dusk_fair.png")
+                undecorated map = load_texture("images/blue_back.png")
             }
             
-            mesh(sphere_geometry(800, 64, 32), sky_dome_material) sky_dome {
-                position pos = position(0, -690, 0)
+            mesh(sphere_geometry(300, 16, 8), sky_dome_material) sky_dome {
+                position pos = position(0, -90, 0)
                 rotation rot = rotation(0, 0, 0.5 * 3.14159)
             }
 
@@ -730,7 +730,7 @@ site fundev {
             ]
             
             javascript next_frame {
-                sky_dome.rotate(0, 0.00005, 0);
+                sky_dome.rotate(0, 0.0013, 0);
             }
         }
       

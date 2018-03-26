@@ -1,0 +1,5 @@
+The Flex-Functional Style of Programming
+
+Flex-functional is an approach to programming that begins with functional principles but expands on the notion of function to allow for a more natural and expressive language.  In a flex-functional language, functions take on non-functional roles, such as variables and class definitions. This flows from the realization that    
+
+ include roles traditionally   
