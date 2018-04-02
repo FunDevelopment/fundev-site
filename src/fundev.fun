@@ -646,7 +646,7 @@ site fundev {
             function collapseElement(element) {
                 function endTransition(event) {     
                     if (event.target == element.content) {
-                        element.content.removeEventListener(this.transitionendevent, bindEvent);
+                        element.content.removeEventListener("transitionendevent", bindEvent);
                         if (!element.isOpen) {
                             this.fire("elementClosed", element);
                         }
@@ -654,7 +654,7 @@ site fundev {
                 }
 
                 var bindEvent = endTransition.bind(this);
-                element.content.addEventListener(this.transitionendevent, bindEvent);
+                element.content.addEventListener("transitionendevent", bindEvent);
                 element.isOpen = false;    
                 requestAnimationFrame(function() {
                     element.content.style.transition = '0';
@@ -669,7 +669,7 @@ site fundev {
             function expandElement(element) {
                 function resetHeight(event) {
                     if (event.target == element.content) {
-                        element.content.removeEventListener(this.transitionendevent, bindEvent);
+                        element.content.removeEventListener("transitionendevent", bindEvent);
                         if (element.isOpen) {
                             requestAnimationFrame(function() {      
                                 element.content.style.transition = '0';
@@ -684,7 +684,7 @@ site fundev {
                     }
                 }
                 var bindEvent = resetHeight.bind(this);
-                element.content.addEventListener(this.transitionendevent, bindEvent);
+                element.content.addEventListener("transitionendevent", bindEvent);
                 element.isOpen = true;
                 element.content.style.height = element.content.scrollHeight + "px";
             }
