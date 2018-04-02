@@ -410,7 +410,7 @@ site fundev {
             
             .main_point_body {
                 overflow: hidden;
-                transition: transform 0.67s ease-out, height 0.67s ease-out;
+                transition: transform 0.67s ease-in-out, height 0.67s ease-in-out;
             }
 
             .active, .main_point:hover {
@@ -494,6 +494,7 @@ site fundev {
                 color: blue;
                 font-family: "Courier", monospace;
                 font-weight: bold;
+                padding-bottom: 0.5rem;
             }
             
             {= media_queries; =}
@@ -617,7 +618,14 @@ site fundev {
         static javascript toggle_point [|
             this.classList.toggle('point_active');
             var div = this.nextElementSibling;
-            if (div.classList.contains('point_open')) {
+            var openDiv = getOpenSibling(div);
+            if (openDiv !== null) {
+                openDiv.classList.remove('point_open');
+                div.classList.remove('panel_closed');
+                collapseExpandElements(openDiv, div);          
+                div.classList.add('point_open');
+                openDiv.classList.add('point_closed');
+            } else if (div.classList.contains('point_open')) {
                 div.classList.remove('point_open');
                 collapseElement(div);
                 div.classList.add('point_closed');
@@ -629,30 +637,75 @@ site fundev {
         |]
 
         static javascript accordion_functions [|
+            function collapseExpandElements(colElement, expElement) {
+                collapseElement(colElement);
+                expandElement(expElement);
+            }            
+
+
             function collapseElement(element) {
-                element.style.height = 0 + 'px';
-/*****
-                var height = element.scrollHeight;
-                var transition = element.style.transition;
-                element.style.transition = '';
+                function endTransition(event) {     
+                    if (event.target == element.content) {
+                        element.content.removeEventListener(this.transitionendevent, bindEvent);
+                        if (!element.isOpen) {
+                            this.fire("elementClosed", element);
+                        }
+                    }
+                }
+
+                var bindEvent = endTransition.bind(this);
+                element.content.addEventListener(this.transitionendevent, bindEvent);
+                element.isOpen = false;    
                 requestAnimationFrame(function() {
-                    element.style.height = height + 'px';
+                    element.content.style.transition = '0';
+                    element.content.style.height = element.content.scrollHeight + "px";
                     requestAnimationFrame(function() {
-                        element.style.transition = transition;
-                        element.style.height = 0 + 'px';
+                        element.content.style.transition = null;
+                        element.content.style.height = 0;
                     });
                 });
-*****/
             }
 
             function expandElement(element) {
-                var height = element.scrollHeight;
-                element.style.height = height + 'px';
-                element.addEventListener('transitionend', function handle_end(e) {
-                    element.removeEventListener('transitionend', handle_end);
-                    element.style.height = null;
-                });
-
+                function resetHeight(event) {
+                    if (event.target == element.content) {
+                        element.content.removeEventListener(this.transitionendevent, bindEvent);
+                        if (element.isOpen) {
+                            requestAnimationFrame(function() {      
+                                element.content.style.transition = '0';
+                                element.content.style.height = 'auto';
+                                requestAnimationFrame(function() {
+                                    element.content.style.height = null;
+                                    element.content.style.transition = null;
+                                    this.fire("elementOpened", element);
+                                });
+                            });
+                        }
+                    }
+                }
+                var bindEvent = resetHeight.bind(this);
+                element.content.addEventListener(this.transitionendevent, bindEvent);
+                element.isOpen = true;
+                element.content.style.height = element.content.scrollHeight + "px";
+            }
+            
+            function getOpenSibling(element) {
+                var sibling = element.previousElementSibling.previousElementSibling;
+                while (sibling !== null) {
+                    if (sibling.classList.contains('point_open')) {
+                        return sibling;
+                    }
+                    sibling = sibling.previousElementSibling.previousElementSibling;
+                }
+                sibling = element.nextElementSibling;
+                while (sibling !== null) {
+                    sibling = sibling.nextElementSibling;
+                    if (sibling.classList.contains('point_open')) {
+                        return sibling;
+                    }
+                    sibling = sibling.nextElementSibling;
+                }
+                return null;
             }
         |]
         
@@ -671,12 +724,12 @@ site fundev {
            <ul>
         |]
         
-        main_point("Simple and Expressive", expressive_and_simple);
-        main_point("Declarative and Flexibly Functional", declarative);
+        main_point("Poetic", poetic);
+        main_point("Flexibly Functional", declarative);
         main_point("Object-Oriented", object_oriented);
-        main_point("Web-Oriented", web_oriented);
-        main_point("Automated State Management", automated_state_management);
-        main_point("Fun is Fun!", fun_is_fun);
+        main_point("Web Native", web_oriented);
+        main_point("Safely Stateful", automated_state_management);
+        main_point("Fun!", fun_is_fun);
 
         [| </ul></div><script> |]
         
@@ -761,12 +814,22 @@ site fundev {
         principles that have guided the design of Fun.</p>
     |]
     
+    
+    poetic [|
+        <p>Fun's design philosophy, <b>Poetic Programming</b>, asserts that the same
+        qualities that allow poetry to be simultaneously more expressive and simpler 
+        than prose can work for programming as well: economy (use fewer words and 
+        shorter phrases), richness (use words and phrases that have multiple layers 
+        of meaning) and beauty (arrange the words and phrases into a melodious, 
+        rhythmic and visually pleasing whole).</p>
+    |]
+    
+    
     declarative [|
         <p>A Fun program is a description of output, not a list of commands.  Fun is not
         strictly functional, because this description is not limited to functions -- it
         can also include procedural-style control structures (conditionals and loops)
-        and template-style embedded data (HTML, CSS and Javascript).  Another departure
-        from strict functional programming is Fun's automated state management.</p>
+        and template-style embedded data (HTML, CSS and Javascript).</p>
     |]
     
     object_oriented [|
