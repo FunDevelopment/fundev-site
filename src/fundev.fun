@@ -646,22 +646,21 @@ site fundev {
             function collapseElement(element) {
                 function endTransition(event) {     
                     if (event.target == element.content) {
-                        element.content.removeEventListener("transitionendevent", bindEvent);
+                        element.removeEventListener("transitionendevent", endTransition);
                         if (!element.isOpen) {
                             this.fire("elementClosed", element);
                         }
                     }
                 }
 
-                var bindEvent = endTransition.bind(this);
-                element.content.addEventListener("transitionendevent", bindEvent);
+                element.addEventListener("transitionendevent", endTransition);
                 element.isOpen = false;    
-                requestAnimationFrame(function() {
-                    element.content.style.transition = '0';
-                    element.content.style.height = element.content.scrollHeight + "px";
-                    requestAnimationFrame(function() {
-                        element.content.style.transition = null;
-                        element.content.style.height = 0;
+                requestAnimationFrame(()=>{
+                    element.style.transition = '0';
+                    element.style.height = element.scrollHeight + "px";
+                    requestAnimationFrame(()=>{
+                        element.style.transition = null;
+                        element.style.height = 0;
                     });
                 });
             }
@@ -669,24 +668,23 @@ site fundev {
             function expandElement(element) {
                 function resetHeight(event) {
                     if (event.target == element.content) {
-                        element.content.removeEventListener("transitionendevent", bindEvent);
+                        element.removeEventListener("transitionendevent", resetHeight);
                         if (element.isOpen) {
                             requestAnimationFrame(function() {      
-                                element.content.style.transition = '0';
-                                element.content.style.height = 'auto';
+                                element.style.transition = '0';
+                                element.style.height = 'auto';
                                 requestAnimationFrame(function() {
-                                    element.content.style.height = null;
-                                    element.content.style.transition = null;
+                                    element.style.height = null;
+                                    element.style.transition = null;
                                     this.fire("elementOpened", element);
                                 });
                             });
                         }
                     }
                 }
-                var bindEvent = resetHeight.bind(this);
-                element.content.addEventListener("transitionendevent", bindEvent);
+                element.addEventListener("transitionendevent", resetHeight);
                 element.isOpen = true;
-                element.content.style.height = element.content.scrollHeight + "px";
+                element.style.height = element.scrollHeight + "px";
             }
             
             function getOpenSibling(element) {
