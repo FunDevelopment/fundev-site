@@ -724,9 +724,9 @@ site fundev {
         
         main_point("Poetic", poetic);
         main_point("Flexibly Functional", declarative);
-        main_point("Object-Oriented", object_oriented);
-        main_point("Web Native", web_oriented);
         main_point("Safely Stateful", automated_state_management);
+        main_point("Object Oriented", object_oriented);
+        main_point("Web Native", web_oriented);
         main_point("Fun!", fun_is_fun);
 
         [| </ul></div><script> |]
@@ -752,7 +752,7 @@ site fundev {
                 boolean transparent = true
             }
             
-            mesh(sphere_geometry(100, 64, 64), blue_material) blue_sphere {
+            mesh(sphere_geometry(1000, 64, 64), blue_material) blue_sphere {
                 position pos = position(0, 0, 0)
                 on_drag {
                     log("blue_sphere.on_drag called");
@@ -766,7 +766,7 @@ site fundev {
                 undecorated map = load_texture("images/blue_back.png")
             }
             
-            mesh(sphere_geometry(300, 16, 8), sky_dome_material) sky_dome {
+            mesh(sphere_geometry(1000, 16, 8), sky_dome_material) sky_dome {
                 position pos = position(0, -90, 0)
                 rotation rot = rotation(0, 0, 0.5 * 3.14159)
             }
@@ -781,7 +781,7 @@ site fundev {
             ]
             
             javascript next_frame {
-                sky_dome.rotate(0, 0.0013, 0);
+                sky_dome.rotate(0, 0.0009, 0);
             }
         }
       
