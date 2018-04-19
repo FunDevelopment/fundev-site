@@ -288,6 +288,7 @@ site fundev {
         label [?]
         
         scene bg_scene [?]
+        scene content_header_scene [?]
         
         style {
             main_style;
@@ -529,6 +530,9 @@ site fundev {
             
         }        
 
+        component side_box {
+        }
+
         component header_bar {
             component_class = "header_bar"
             
@@ -546,14 +550,20 @@ site fundev {
 
         } else if (!needs_admin || authenticate_admin(this_username)) {
             log("we're good");
-            [| <div class="page_wrapper"><div class="side_box"> |]
-            header_bar;
+            [| <div class="page_wrapper"><div class="header_box"> |]
+            content_header_box;
+            [| </div><div class="side_box"> |]
+            side_box;
             menu_box(page_name, main_menu);
             [| 
                </div><div class="content_box"><div class="content_body">
             |] 
+            
             sub;
-            [| </div></div> |]
+            [| </div></div><div class="footer_box"> |]
+            footer_box(page_name, main_menu);
+            [| </div> |] 
+            
             with (bg_scene) {
                 tc(bg_scene);
             }
@@ -607,6 +617,15 @@ site fundev {
         
     }    
 
+    component content_header_box {
+        with (content_header_scene) {
+            tc(content_header_scene);
+        }
+    }
+
+    component footer_box {
+    
+    }
 
     /-------- home page ---------------------------/
 
@@ -716,6 +735,7 @@ site fundev {
             [| </div> |]
         }
 
+        
 
         [| <div class="main_panel content_main_points">
            <h2>The Fun Programming Language is</h2>
