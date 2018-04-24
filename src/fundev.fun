@@ -122,13 +122,17 @@ site fundev {
         }
 
         .menu_box li {
-            display: block;
+            float: left;
+            display: inline;
             padding: 0.5rem 1rem;
+            margin: 1rem;
         }
         
         .menu_box ul {
+            list-style-type: none;
             padding: 0;
             margin: 0;
+            overflow: hidden;
         }
        
         .menu_box a {
@@ -140,6 +144,7 @@ site fundev {
         }
 
         .menu_item {
+            display: block;
             font-weight: bold;
             font-size: 1.2rem;
             font-family: "Arial", sans-serif;
@@ -190,17 +195,18 @@ site fundev {
         item_class = "menu_item"
         
         dynamic show(selected_page_name) {
+            [| <a class=" |]
+            item_class;
             if (selected_page_name == pg.type) {
-                [| <span class="{= item_class; =} selected_item"> |]
-                pg.label;
-                [| </span> |]
+                 " selected_item";
             } else { 
-                [| <a class="{= item_class; =} unselected_item" href="/ |]
-                pg.type;
-                [| "> |]
-                pg.label;
-                [| </a> |]
+                " unselected_item";
             }
+            [| " href="/ |]
+            pg.type;
+            [| "> |]
+            pg.label;
+            [| </a> |]
         }    
     }    
 
@@ -227,11 +233,17 @@ site fundev {
                                       menu_item(docs),
                                       menu_item(download) ]
 
+    dynamic menu_item[] header_menu = [ menu_item(index),
+                                        menu_item(quick_tour_page),
+                                        menu_item(docs),
+                                        menu_item(download),
+                                        menu_item(about) ]
+
 
     media_queries {
     
         int narrow_max = HEADER_MIN_WIDTH + MENU_WIDTH   
-      
+        float side_box_width = 11.5
       
         /--- narrow ---/
           
@@ -246,7 +258,7 @@ site fundev {
                .side_box {
                    width: 100%;
                }
-               .content_box {
+               .content_body {
                    width: 96%;
                    padding: 2%;
                }
@@ -267,10 +279,10 @@ site fundev {
                .side_box {
                    position: fixed;
                    float: left;
-                   width: {= MENU_WIDTH; =}rem;
+                   width: {= (side_box_width - 2); =}rem;
                }
-               .content_box {
-                   margin-left: {= MENU_WIDTH; =}rem;
+               .content_body {
+                   margin-left: {= side_box_width; =}rem;
                }
            }
         |]
@@ -301,6 +313,7 @@ site fundev {
                 margin: 0 0 0 0;
                 background-color: {= main_bgcolor; =};
                 font-family: "Arial", sans-serif;
+                font-size: 100%;
             }
             
             code, pre {
@@ -336,16 +349,16 @@ site fundev {
             }
 
             .side_box {
+                background-color: white;
                 margin: 0;
-                padding: 0;
+                padding: 5rem 1rem;
                 z-index: 1000;
             }
             
-            .content_box {
-                background-color: white;
-                max-width: 49rem;
+            .footer_box {
+                clear: both;
             }
-
+            
             .content_header {
                 position: fixed;
                 height: {= HEADER_LOGO_HEIGHT; =}px;
@@ -364,8 +377,10 @@ site fundev {
             }
 
             .content_body {
+                background-color: white;
+                max-width: 49rem;
                 color: black;
-                padding: 1rem 1.5rem;
+                padding: 1rem 0rem;
                 font-family: "Lucida Bright", Georgia, serif;
                 font-size: 0.95rem;
                 line-height: 1.5;
@@ -405,7 +420,6 @@ site fundev {
                 background-color: white;
                 font-size: 1.25rem;
                 padding: 0.25rem;
-                display: block;
                 list-style-type: square;
             }
             
@@ -414,7 +428,7 @@ site fundev {
                 transition: transform 0.67s ease-in-out, height 0.67s ease-in-out;
             }
 
-            .active, .main_point:hover {
+            .active, .main_point_span:hover {
                 background-color: gold; 
             }
             
@@ -488,14 +502,18 @@ site fundev {
                 height: 100%;
             }
             
-            h2 {
-                margin: 0;
-                font-size: 1.5rem;
-                line-height: 1;
+            h1 {
                 color: blue;
-                font-family: "Courier", monospace;
+                font-size: 1.25rem;
+                font-family: Impact, Charcoal, sans-serif
                 font-weight: bold;
-                padding-bottom: 0.5rem;
+            }
+            
+            h2 {
+                color: #777777;
+                font-size: 1rem;
+                font-family: "Arial Black", Gadget, sans-serif
+                font-weight: bold;
             }
             
             {= media_queries; =}
@@ -531,6 +549,9 @@ site fundev {
         }        
 
         component side_box {
+            [| <h1>The Fun Programming Language</h1>
+               <h2>A functional-ish, object-y language for imaginitive programming</h2> 
+            |]
         }
 
         component header_bar {
@@ -551,17 +572,15 @@ site fundev {
         } else if (!needs_admin || authenticate_admin(this_username)) {
             log("we're good");
             [| <div class="page_wrapper"><div class="header_box"> |]
+            menu_box(page_name, header_menu);
+            [| </div><div class="content_header_box"> |]
             content_header_box;
             [| </div><div class="side_box"> |]
             side_box;
-            menu_box(page_name, main_menu);
-            [| 
-               </div><div class="content_box"><div class="content_body">
-            |] 
-            
+            [| </div><div class="content_body"> |] 
             sub;
-            [| </div></div><div class="footer_box"> |]
-            footer_box(page_name, main_menu);
+            [| </div><div class="footer_box"> |]
+            footer_box(page_name, footer_menu);
             [| </div> |] 
             
             with (bg_scene) {
@@ -571,7 +590,7 @@ site fundev {
 
         } else {
             log("access to " + page_name + " by " + this_username + " denied");
-            "fail";
+            "Access denied.";
         }   
     
     }
@@ -728,19 +747,16 @@ site fundev {
         
 
         dynamic main_point(pt_label, pt_body) {
-            [| <li class="main_point" onclick="{= toggle_point; =}"> |]
+            [| <li class="main_point" onclick="{= toggle_point; =}"><span class="main_point_span"> |]
             pt_label;
-            [| </li><div class="main_point_body point_closed"> |]
+            [| </span></li><div class="main_point_body point_closed"> |]
             pt_body;
             [| </div> |]
         }
 
         
 
-        [| <div class="main_panel content_main_points">
-           <h2>The Fun Programming Language is</h2>
-           <ul>
-        |]
+        [| <div class="main_panel content_main_points"><ul> |]
         
         main_point("Poetic", poetic);
         main_point("Flexibly Functional", declarative);
@@ -1132,6 +1148,14 @@ public tt {
         boolean needs_login = false    
 
         label = "Download"
+    }
+    
+    /-------- about page -----------------------/
+
+    public base_page(*) about(params{}) {
+        boolean needs_login = false    
+
+        label = "About"
     }
     
     /-------- examples page -----------------------/
